@@ -34,8 +34,10 @@ public class Server extends Thread {
 	        
 	        Client newClient = new Client();
 	        newClient.messageClient = new MessageClient(clientSocket);
+	        newClient.messageClient.setClient(newClient);
 	        newClient.messageClient.start();
-	        ClientManager.registerClient(newClient);	        
+	        ClientManager.registerClient(newClient);
+	        
 		}
 		
 	}

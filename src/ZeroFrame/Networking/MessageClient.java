@@ -17,6 +17,7 @@ import ZeroFrame.Constants.MessageCodes;
  */
 public class MessageClient extends Thread {
 	
+	private Client myClient;
 	public Socket ClientSocket = null;
     public String ClientName = "";
 	public PrintWriter output = null;
@@ -122,7 +123,15 @@ public class MessageClient extends Thread {
 	}
 	
 	private void messageDispatch(String messageCode, String payload){
-		ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload);
-		ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload);
+		if(messageCode == ZeroFrame.Constants.MessageCodes.REQUEST_AUDIO_SOCKET){
+			
+		} else {
+			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload);
+			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload);
+		}	
+	}
+	
+	public void setClient(Client client){
+		this.myClient = client;
 	}
 }

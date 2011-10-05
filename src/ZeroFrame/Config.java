@@ -14,13 +14,18 @@ public class Config {
 	
 	//The port to bind to
 	public static int serverPort;
-
 	
+	//whether or not the server will run in headless mode
+	public static Boolean headlessMode;
 	
-	public static Boolean loadConfiguration(){
-		//extensionFolder = "/home/hitsynth/workspace/ZeroFrame/bin/ZeroFrame/Extensions";
+	public static Boolean loadConfiguration(){		
 		extensionFolder = "Extensions";
+		headlessMode = true;
 		serverPort = 8500;
 		return true;
+	}
+	
+	public static void setSystemVariables(){
+		System.setProperty("java.awt.headless", headlessMode.toString());
 	}
 }

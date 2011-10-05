@@ -28,4 +28,7 @@ public final class MessageCodes {
 	//0500 will be a generic message
 	public final static String GENERIC_MESSAGE = "0500";
 	
+	
+	//Error Codes are in the 9000 to 9999 range
+	public final static String BAD_MESSAGE = "9999";
 }

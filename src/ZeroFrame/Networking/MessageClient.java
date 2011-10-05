@@ -19,7 +19,6 @@ public class MessageClient extends Thread {
 	
 	private Client myClient;
 	public Socket ClientSocket = null;
-    public String ClientName = "";
 	public PrintWriter output = null;
 	public BufferedReader input = null;
 
@@ -60,7 +59,7 @@ public class MessageClient extends Thread {
 			e.printStackTrace();
 		}
 		
-		ClientName = clientIdentity;
+		myClient.setClientName(clientIdentity);
         
         if(!disconnectClient){
         	ZeroFrame.EventsManager.Messaging.raiseClientConnectedEvent();
@@ -92,7 +91,6 @@ public class MessageClient extends Thread {
 				String code = getMessageType(inputString);
 				String pay = getPayload(inputString);
 				messageDispatch(code, pay);
-				output.println("A message was received.");
 			}
         } catch (SocketException e) {
 				//TODO: Call a function to destroy the current client
@@ -111,7 +109,12 @@ public class MessageClient extends Thread {
 	}
 	
 	private String getMessageType(String message){
-		return message.substring(0, 4);
+		if(message.length() >= 4){
+			return message.substring(0, 4);
+		}else{
+			return ZeroFrame.Constants.MessageCodes.BAD_MESSAGE;
+		}
+		
 	}
 	
 	private String getPayload(String message){
@@ -123,12 +126,18 @@ public class MessageClient extends Thread {
 	}
 	
 	private void messageDispatch(String messageCode, String payload){
-		if(messageCode == ZeroFrame.Constants.MessageCodes.REQUEST_AUDIO_SOCKET){
-			
+		if(messageCode.equals(ZeroFrame.Constants.MessageCodes.REQUEST_AUDIO_SOCKET)){
+			myClient.initializeAudioStream();
 		} else {
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload);
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload);
+			output.println(prepareMessage("9000", "Acknowledged."));
 		}	
+	}
+	
+	public void sendMessage(String messageCode, String payload){
+		String message = prepareMessage(messageCode, payload);
+		output.println(message);
 	}
 	
 	public void setClient(Client client){

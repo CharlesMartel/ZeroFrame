@@ -12,6 +12,9 @@ public class Config {
 	//The folder where all extensions are to be held
 	public static String extensionFolder;
 	
+	//The folder where the text language models are held
+	public static String languageModelFolder;
+	
 	//The port to bind to
 	public static int serverPort;
 	
@@ -20,6 +23,7 @@ public class Config {
 	
 	public static Boolean loadConfiguration(){		
 		extensionFolder = "Extensions";
+		languageModelFolder = "LanguageModels";
 		headlessMode = true;
 		serverPort = 8500;
 		return true;
@@ -27,5 +31,9 @@ public class Config {
 	
 	public static void setSystemVariables(){
 		System.setProperty("java.awt.headless", headlessMode.toString());
+	}
+	
+	public static void initializeSystemObjects(){
+		ZeroFrame.Analysis.TextAnalyzer.initialize();
 	}
 }

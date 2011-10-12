@@ -12,13 +12,6 @@ import java.util.List;
  *
  */
 public class Messaging {
-
-	public static List<Method> ClientConnectedEventMethods = new ArrayList<Method>(0);
-	public static List<Object> ClientConnectedEventObjects = new ArrayList<Object>(0);	
-	public static void registerClientConnectedEvent(Object caller, Method invokable){
-		ClientConnectedEventObjects.add(caller);
-		ClientConnectedEventMethods.add(invokable);
-	}
 	
 	public static List<Method> MessageReceivedEventMethods = new ArrayList<Method>(0);
 	public static List<Object> MessageReceivedEventObjects = new ArrayList<Object>(0);	

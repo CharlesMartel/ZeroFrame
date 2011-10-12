@@ -17,12 +17,11 @@ public class Main {
 	 */
 	public static void main(String[] args) throws Exception {		
 		Config.loadConfiguration();
+		Config.initializeSystemObjects();
 
 		ZeroFrame.ExtensionsManager.Extensions.loadModules(Config.extensionFolder);
 		
 		ZeroFrame.EventsManager.Startup.raiseExtensionsLoadedEvent();
-		
-		System.out.println("Modules Loaded");
 		
 		ZeroFrame.Networking.Server Server = new ZeroFrame.Networking.Server();
 		Server.start();
@@ -31,6 +30,7 @@ public class Main {
 		
 		Application App = new Application();
 		App.start();
+		System.out.println("Ready.");
 	}
 }
 

@@ -60,8 +60,8 @@ public class Events {
 		if(invokable == null){
 			//TODO: Log an instance where the method could not be found in the class
 		}else{
-			ZeroFrame.Events.Messaging.ClientConnectedEventMethods.add(invokable);
-			ZeroFrame.Events.Messaging.ClientConnectedEventObjects.add(object);
+			ZeroFrame.Events.Networking.ClientConnectedEventMethods.add(invokable);
+			ZeroFrame.Events.Networking.ClientConnectedEventObjects.add(object);
 		}
 	}
 	

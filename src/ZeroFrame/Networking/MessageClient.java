@@ -62,7 +62,7 @@ public class MessageClient extends Thread {
 		myClient.setClientName(clientIdentity);
         
         if(!disconnectClient){
-        	ZeroFrame.EventsManager.Messaging.raiseClientConnectedEvent();
+        	ZeroFrame.EventsManager.Networking.raiseClientConnectedEvent();
         	runSocket();
         }else{
         	try {
@@ -127,7 +127,7 @@ public class MessageClient extends Thread {
 	
 	private void messageDispatch(String messageCode, String payload){
 		if(messageCode.equals(ZeroFrame.Constants.MessageCodes.REQUEST_AUDIO_SOCKET)){
-			myClient.initializeAudioStream();
+			myClient.initializeAudioStream(payload);
 		} else {
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload);
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload);

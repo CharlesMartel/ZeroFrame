@@ -33,6 +33,7 @@ public class Server extends Thread {
 	        }
 	        
 	        Client newClient = new Client();
+	        newClient.setClientHost(clientSocket.getInetAddress());
 	        MessageClient tempclient = new MessageClient(clientSocket);
 	        tempclient.setClient(newClient);
 	        tempclient.start();

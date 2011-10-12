@@ -3,6 +3,8 @@
  */
 package ZeroFrame.Networking;
 
+import java.net.InetAddress;
+
 /**
  * @author Hammer
  *
@@ -12,6 +14,7 @@ public class Client {
 	private String clientName = "";
 	private MessageClient messageClient;
 	private AudioClient audioClient;
+	private InetAddress clientHost = null;
 	
 	public void setClientName(String name){
 		clientName = name;
@@ -25,10 +28,10 @@ public class Client {
 		
 	}
 	
-	public void initializeAudioStream(){
-		audioClient = new AudioClient();
+	public void initializeAudioStream(String clientPortNumber){		
+		audioClient = new AudioClient(clientHost.getHostAddress(), clientPortNumber);
 		audioClient.run();
-		int portNum = audioClient.getServerPort();
+		int portNum = 8005;
 		sendMessage(ZeroFrame.Constants.MessageCodes.AUDIO_SOCKET_PARAM, Integer.toString(portNum));
 	}
 	
@@ -38,6 +41,14 @@ public class Client {
 	
 	public void setMessageClient(MessageClient client){
 		messageClient = client;
+	}
+	
+	public void setClientHost(InetAddress clientHost){
+		this.clientHost = clientHost;
+	}
+	
+	public InetAddress getClientHost(){
+		return this.clientHost;
 	}
 
 }

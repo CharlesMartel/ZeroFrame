@@ -18,5 +18,7 @@ public abstract class Module {
     public String Name = "Name Not Set";
 	public String Version = "Version Not Set";
 	public String Creator = "Creator Not Set";
+	
+	
 
 }

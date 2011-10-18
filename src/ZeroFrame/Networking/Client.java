@@ -29,9 +29,9 @@ public class Client {
 	}
 	
 	public void initializeAudioStream(String clientPortNumber){		
-		audioClient = new AudioClient(clientHost.getHostAddress(), clientPortNumber);
+		audioClient = new AudioClient();
 		audioClient.run();
-		int portNum = 8005;
+		int portNum = audioClient.getServerPort();
 		sendMessage(ZeroFrame.Constants.MessageCodes.AUDIO_SOCKET_PARAM, Integer.toString(portNum));
 	}
 	

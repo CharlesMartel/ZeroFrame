@@ -4,7 +4,7 @@
 package ZeroFrame.EventsManager;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import ZeroFrame.Extensions.ClientAdapter;
 
 /**
  * @author Hammer
@@ -12,8 +12,9 @@ import java.util.Arrays;
  */
 public class Messaging {
 	
-	public static void raiseMessageReceivedEvent(String code, String payload){
-		Object paramsObj[] = {code, payload};
+	public static void raiseMessageReceivedEvent(String code, String payload, ZeroFrame.Networking.Client client){
+		ClientAdapter cAdapter = new ClientAdapter(client);
+		Object paramsObj[] = {cAdapter, payload};
 		int count = ZeroFrame.Events.Messaging.MessageReceivedEventObjects.size();		
 		for(int index = 0; index < count; index++){			
 			try {
@@ -31,13 +32,14 @@ public class Messaging {
 		}	
 	}
 	
-	public static void raiseMessageReceivedParameterizedEvent(String code, String payload){
-		Object paramsObj[] = {code, payload};		
+	public static void raiseMessageReceivedParameterizedEvent(String code, String payload, ZeroFrame.Networking.Client client){
+		ClientAdapter cAdapter = new ClientAdapter(client);
+		Object paramsObj[] = {cAdapter, payload};
 		
 		int count = ZeroFrame.Events.Messaging.MessageReceivedParameterizedEventObjects.size();		
 			
 		for(int index = 0; index < count; index++){
-			if(ZeroFrame.Analysis.TextAnalyzer.parameterMatchCheck((String[])ZeroFrame.Events.Messaging.MessageReceivedParameterizedEventParameters.get(index), payload)){			
+			if(ZeroFrame.Analysis.TextAnalyzer.parameterMatchCheck(ZeroFrame.Events.Messaging.MessageReceivedParameterizedEventParameters.get(index), payload)){			
 				try {
 					ZeroFrame.Events.Messaging.MessageReceivedParameterizedEventMethods.get(index).invoke(ZeroFrame.Events.Messaging.MessageReceivedParameterizedEventObjects.get(index), paramsObj);
 				} catch (IllegalArgumentException e) {

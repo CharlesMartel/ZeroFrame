@@ -2,6 +2,7 @@ package ZeroFrame;
 
 public class Application extends Thread {
 
+	@Override
 	public void run(){
 		while(true){
 			try {

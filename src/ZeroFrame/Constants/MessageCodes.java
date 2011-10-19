@@ -19,16 +19,20 @@ public final class MessageCodes {
 	public final static String IDENTIFY_CLIENT = "0010";
 	public final static String IDENTITY_NOT_KNOWN = "0011";
 	
-	//Audio requests are in the 0100 - 0199 range
+	//Client configuration business is put into the 0050 - 0099 range
+	
+	//Audio requests are in the 0100 - 0299 range
 	public final static String REQUEST_AUDIO_SOCKET = "0100";
 	public final static String AUDIO_SOCKET_PARAM = "0101";
+	public final static String AUDIO_TRANSFER_NOTIFICATION = "0102";
 	
-	//Video requests are in the 0200 - 0299 range
+	//Video requests are in the 0300 - 0499 range
 	
-	//0500 will be a generic message
-	public final static String GENERIC_MESSAGE = "0500";
+	//Speech requests are in the 0500 - 0599 range
+	public final static String SPEAK_PHRASE = "0500";
 	
+	//0700 - 0710 will be a generic messages
+	public final static String GENERIC_MESSAGE = "0700";
+	public final static String NOTIFY_PLUGIN = "0701";
 	
-	//Error Codes are in the 9000 to 9999 range
-	public final static String BAD_MESSAGE = "9999";
 }

@@ -26,6 +26,7 @@ public class MessageClient extends Thread {
 		ClientSocket = clientSocket;
 	}
 	
+	@Override
 	public void run(){
 		
 		try {
@@ -112,7 +113,7 @@ public class MessageClient extends Thread {
 		if(message.length() >= 4){
 			return message.substring(0, 4);
 		}else{
-			return ZeroFrame.Constants.MessageCodes.BAD_MESSAGE;
+			return "Bad Message!";
 		}
 		
 	}
@@ -126,11 +127,13 @@ public class MessageClient extends Thread {
 	}
 	
 	private void messageDispatch(String messageCode, String payload){
+		//I would love to use a switch here, alas java does not switch on strings...
 		if(messageCode.equals(ZeroFrame.Constants.MessageCodes.REQUEST_AUDIO_SOCKET)){
+			//tell the client that this message client belongs to, to initialize the audio stream
 			myClient.initializeAudioStream(payload);
 		} else {
-			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload);
-			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload);
+			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload, myClient);
+			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload, myClient);
 			output.println(prepareMessage("9000", "Acknowledged."));
 		}	
 	}

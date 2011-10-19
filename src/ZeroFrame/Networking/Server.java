@@ -14,6 +14,7 @@ public class Server extends Thread {
 	
 	InetAddress ServerIP = null;
 	
+	@Override
 	public void run(){
 		serverSocket = null;
 		clientSocket = null;

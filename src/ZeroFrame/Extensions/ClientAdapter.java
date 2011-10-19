@@ -2,37 +2,34 @@ package ZeroFrame.Extensions;
 
 /**
  * @author Hammer
- *
+ * 
  */
 public class ClientAdapter {
+
+	private ZeroFrame.Networking.Client myClient = null;
+
+	public ClientAdapter(ZeroFrame.Networking.Client client) {
+		myClient = client;
+	}
+
+	// Property methods
 	
-	public static ClientInstance getClientByName(String clientName){
-		return null;
+	public String getClientName(){
+		return myClient.getClientName();
+	}
+
+	// Action Methods
+
+	public void speak(String toSpeak) {
+		myClient.speak(toSpeak);
 	}
 	
-	
-	
-	
-	public class ClientInstance{
-		
-		private ZeroFrame.Networking.Client myClient;
-		
-		
-		//Constructors
-		public ClientInstance(ZeroFrame.Networking.Client client){
-			myClient = client;
-		}
-		
-		
-		
-		//Access methods
-		
-		
-		//Action Methods
-		
-		public void speak(){
-			
-		}
+	public void sendMessage(String message){
+		myClient.sendMessage(message);
 	}
 	
+	public void sendPluginNotification(String pluginId, String payload){
+		myClient.sendMessage(ZeroFrame.Constants.MessageCodes.NOTIFY_PLUGIN, pluginId + "::" + payload);
+	}
+
 }

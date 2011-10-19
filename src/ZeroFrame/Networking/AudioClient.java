@@ -6,7 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class AudioClient extends Thread {
-
+	
+	private Client myClient = null;
 	private ArrayList<ByteArrayOutputStream> StreamQueue = new ArrayList<ByteArrayOutputStream>(0);
 	private Socket ClientSocket = null;
 	private ServerSocket ServerSocket = null;
@@ -17,10 +18,12 @@ public class AudioClient extends Thread {
 	private ReceiveData receiveData = null;
 	private SendData sendData = null;
 
-	public AudioClient() {
+	public AudioClient(Client parentClient) {
+		myClient = parentClient;
 		initializeServerSocket();
 	}
 
+	@Override
 	public void run() {
 		receiveData = new ReceiveData();
 		sendData = new SendData();
@@ -59,6 +62,7 @@ public class AudioClient extends Thread {
 	
 	//PrivateThreads
 	private class SendData extends Thread{
+		@Override
 		public void run(){
 			while(ClientSocket == null){
 				//loop until the client connects
@@ -83,9 +87,9 @@ public class AudioClient extends Thread {
 					sleep(500);
 					if(StreamQueue.size() > 0){
 						ByteArrayOutputStream streamHolder = StreamQueue.get(0);
-						for(byte currentByte : streamHolder.toByteArray()){
-							Output.writeByte((int)currentByte);
-						}
+						myClient.sendMessage(ZeroFrame.Constants.MessageCodes.AUDIO_TRANSFER_NOTIFICATION, Integer.toString(streamHolder.toByteArray().length));
+						Output.write(streamHolder.toByteArray());
+						Output.flush();
 						StreamQueue.remove(0);
 					}
 				} catch (InterruptedException e) {
@@ -102,6 +106,7 @@ public class AudioClient extends Thread {
 	}
 	
 	private class ReceiveData extends Thread{
+		@Override
 		public void run(){
 			try {
 				ClientSocket = ServerSocket.accept();

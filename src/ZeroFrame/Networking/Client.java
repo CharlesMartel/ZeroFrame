@@ -35,7 +35,7 @@ public class Client {
 	
 	public void initializeAudioStream(String clientPortNumber){		
 		audioClient = new AudioClient(this);
-		audioClient.run();
+		audioClient.start();
 		int portNum = audioClient.getServerPort();
 		sendMessage(ZeroFrame.Constants.MessageCodes.AUDIO_SOCKET_PARAM, Integer.toString(portNum));
 	}
@@ -103,6 +103,10 @@ public class Client {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void receiveAudio(int byteLength){
+		audioClient.receiveAudio(byteLength);
 	}
 	
 	public void speak(String toSpeak){

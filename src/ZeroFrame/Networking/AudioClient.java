@@ -17,6 +17,7 @@ public class AudioClient extends Thread {
 	private DataOutputStream Output = null;
 	private ReceiveData receiveData = null;
 	private SendData sendData = null;
+	private ZeroFrame.Analysis.VoiceAnalyzer voiceAnalyzer = new ZeroFrame.Analysis.VoiceAnalyzer();
 
 	public AudioClient(Client parentClient) {
 		myClient = parentClient;
@@ -57,6 +58,10 @@ public class AudioClient extends Thread {
 	
 	public int getServerPort(){
 		return ServerSocket.getLocalPort();
+	}
+	
+	public void receiveAudio(int byteLength){
+		receiveData.receive(byteLength);
 	}
 
 	
@@ -115,14 +120,19 @@ public class AudioClient extends Thread {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}			
+		}
+		
+		public void receive(int byteLength) {
+			int lengthOfByteArray = byteLength;
+			byte[] inputBytes = new byte[lengthOfByteArray];
+			try {
+				Input.readFully(inputBytes,0,lengthOfByteArray);
+				voiceAnalyzer.analyzeUtterance(inputBytes, myClient);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-			byte inputByte;
-			
-			//while((inputByte = Input.readByte()) != null){
-				
-			//}
-			
 		}
 	}
 }

@@ -2,9 +2,18 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/home/hitsynth/Downloads/apache-opennlp-1.5.1-incubating/lib/jwnl-1.3.3.jar"/>
-	<classpathentry kind="lib" path="/home/hitsynth/Downloads/apache-opennlp-1.5.1-incubating/lib/opennlp-maxent-3.0.1-incubating.jar"/>
-	<classpathentry kind="lib" path="/home/hitsynth/Downloads/apache-opennlp-1.5.1-incubating/lib/opennlp-tools-1.5.1-incubating.jar"/>
-	<classpathentry kind="lib" path="/home/hitsynth/Desktop/ZeroFrame/JMF-2.1.1e/lib/jmf.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/apache-opennlp-1.5.1-incubating/lib/jwnl-1.3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/apache-opennlp-1.5.1-incubating/lib/opennlp-maxent-3.0.1-incubating.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/apache-opennlp-1.5.1-incubating/lib/opennlp-tools-1.5.1-incubating.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/TIDIGITS_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/WSJ_8gau_13dCep_8kHz_31mel_200Hz_3500Hz.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/ant-contrib-0.6.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/batch.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/js.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/jsapi-1.0-base.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/sphinx4.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/hitsynth/Desktop/lapback/ZeroFrame/sphinx4-1.0beta6/lib/tags.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

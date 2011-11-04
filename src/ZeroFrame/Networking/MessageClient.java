@@ -131,16 +131,19 @@ public class MessageClient extends Thread {
 		if(messageCode.equals(ZeroFrame.Constants.MessageCodes.REQUEST_AUDIO_SOCKET)){
 			//tell the client that this message client belongs to, to initialize the audio stream
 			myClient.initializeAudioStream(payload);
+		} else if (messageCode.equals(ZeroFrame.Constants.MessageCodes.AUDIO_TRANSFER_NOTIFICATION)) {
+			myClient.receiveAudio((Integer.parseInt(payload)));
 		} else {
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload, myClient);
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload, myClient);
 			output.println(prepareMessage("9000", "Acknowledged."));
-		}	
+		} 	
 	}
 	
 	public void sendMessage(String messageCode, String payload){
 		String message = prepareMessage(messageCode, payload);
 		output.println(message);
+		System.out.println(message);
 	}
 	
 	public void setClient(Client client){

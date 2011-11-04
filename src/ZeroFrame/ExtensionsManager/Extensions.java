@@ -24,10 +24,19 @@ import ZeroFrame.Extensions.Module;
 public class Extensions {
 	
 	//Three lists to hold all loaded extensions
-	public static List<ZeroFrame.Extensions.Module> Modules = new ArrayList<ZeroFrame.Extensions.Module> (0);
+	private static List<ZeroFrame.Extensions.Module> Modules = new ArrayList<ZeroFrame.Extensions.Module> (0);
 	
 	
-
+	/**
+	 * Load all modules that exist in the extensions folder.
+	 * This method is recursive, so if it exists anywhere in the directory, no matter how many
+	 * levels deep, the module will be loaded. Modules are loaded on a single thread, so if a 
+	 * module blocks, the entire application will not start
+	 * 
+	 * @param extensionsFolder
+	 * @return The number of modules found
+	 * @throws Exception 
+	 */
 	public static int loadModules(String extensionsFolder) throws Exception {
 		int numberOfModules = 0;
 		
@@ -35,28 +44,37 @@ public class Extensions {
 		File dir = new File(extensionsFolder);
 		File[] files = dir.listFiles();
 		
-		//loop through the files, add modules as they are found
-        for (File f : files) {
-            List<String> classNames = getClassNames(f.getAbsolutePath());
-            for (String className : classNames) {
-                // Remove the ".class" at the back
-                String name = className.substring(0, className.length() - 6);
-                //retrieve the current class
-                Class<?> currentClass = getClass(f, name);
-                //get which class the current class is inherited from
-                Class<?> superClass = currentClass.getSuperclass();
-                //check if is valid module
-                if (superClass.getName().equals("ZeroFrame.Extensions.Module")) {
-                	//instantiate new instance, add to modules list
-                    Modules.add((Module) currentClass.newInstance());
-                    numberOfModules += 1;
-                }
-            }
-        }		
+		//check to see if any files are even in the directory
+		if(files != null){
+		//loop through the files, add modules as they are found	
+	        for (File f : files) {
+	            List<String> classNames = getClassNames(f.getAbsolutePath());
+	            for (String className : classNames) {
+	                // Remove the ".class" at the back
+	                String name = className.substring(0, className.length() - 6);
+	                //retrieve the current class
+	                Class<?> currentClass = getClass(f, name);
+	                //get which class the current class is inherited from
+	                Class<?> superClass = currentClass.getSuperclass();
+	                //check if is valid module
+	                if (superClass.getName().equals("ZeroFrame.Extensions.Module")) {
+	                	//instantiate new instance, add to modules list
+	                    Modules.add((Module) currentClass.newInstance());
+	                    numberOfModules += 1;
+	                }
+	            }
+	        }
+		}
 		return numberOfModules;
 	}
 	
-	
+	/**
+	 * Retrieves an array list of all currently loaded modules.
+	 * @return List<ZeroFrame.Extensions.Module>
+	 */
+	public static List<ZeroFrame.Extensions.Module> getModuleList(){
+		return Modules;
+	}
 	
 	
 	

@@ -32,9 +32,9 @@ public class VoiceAnalyzer {
 	
 	public void analyzeUtterance(byte[] utteranceStream, ZeroFrame.Networking.Client sendingClient){ 
 		ByteArrayInputStream tempByteArrayInputStream = new ByteArrayInputStream(utteranceStream);
-		AudioFormat format = new AudioFormat(44100, 16, 1, true, true);
+		AudioFormat format = new AudioFormat(16000, 16, 1, true, false);
 		AudioInputStream audioStream = null;
-		audioStream = new AudioInputStream(tempByteArrayInputStream, format, utteranceStream.length);
+		audioStream = new AudioInputStream(tempByteArrayInputStream, format, utteranceStream.length);		
         StreamDataSource recognizerStreamSource = (StreamDataSource) configurationManager.lookup("streamDataSource");
         recognizerStreamSource.setInputStream(audioStream, sendingClient.getClientName() + "-voicestream");
         Result result = recognizer.recognize();
@@ -43,7 +43,7 @@ public class VoiceAnalyzer {
 			System.out.println("You said: " + resultText + '\n');
 		} else {
 			System.out.println("I can't hear what you said.\n");
-		}
+		}		
 	}
 	
 }

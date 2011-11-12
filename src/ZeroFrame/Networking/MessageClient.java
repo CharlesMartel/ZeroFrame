@@ -133,9 +133,8 @@ public class MessageClient extends Thread {
 			myClient.initializeAudioStream(payload);
 		} else if (messageCode.equals(ZeroFrame.Constants.MessageCodes.AUDIO_TRANSFER_NOTIFICATION)) {
 			myClient.receiveAudio((Integer.parseInt(payload)));
-		} else {
+		} else if (messageCode.equals(ZeroFrame.Constants.MessageCodes.GENERIC_MESSAGE)){
 			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedEvent(messageCode, payload, myClient);
-			ZeroFrame.EventsManager.Messaging.raiseMessageReceivedParameterizedEvent(messageCode, payload, myClient);
 			output.println(prepareMessage("9000", "Acknowledged."));
 		} 	
 	}

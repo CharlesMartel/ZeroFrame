@@ -4,7 +4,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Networking {
+/**
+ * Static class holding the event registrars for Networking events.l
+ * 
+ * @author Hammer
+ *
+ */
+public final class Networking {
 	
 	public static List<Method> ClientConnectedEventMethods = new ArrayList<Method>(0);
 	public static List<Object> ClientConnectedEventObjects = new ArrayList<Object>(0);	

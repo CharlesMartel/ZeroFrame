@@ -4,7 +4,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Startup {
+/**
+ * Static class holding the event registrars for application startup events
+ * 
+ * @author Hammer
+ *
+ */
+public final class Startup {
 	
 	public static List<Method> ExtensionsLoadedEventMethods = new ArrayList<Method>(0);
 	public static List<Object> ExtensionsLoadedEventObjects = new ArrayList<Object>(0);	

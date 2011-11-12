@@ -2,7 +2,12 @@ package ZeroFrame.EventsManager;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class Startup {
+/**
+ * Static class for raising application startup events.
+ * @author Hammer
+ *
+ */
+public final class Startup {
 	
 	public static void raiseExtensionsLoadedEvent(){
 		Object paramsObj[] = {};

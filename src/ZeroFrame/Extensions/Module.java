@@ -10,9 +10,6 @@ package ZeroFrame.Extensions;
  *
  */
 public abstract class Module {	
-	//Events Management Object
-	public ZeroFrame.Extensions.Events Events = new ZeroFrame.Extensions.Events();
-	
 	public abstract String getName();
 	public abstract String getVersion();
 	public abstract String getAuthor();

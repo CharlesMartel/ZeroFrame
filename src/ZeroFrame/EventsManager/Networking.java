@@ -2,7 +2,12 @@ package ZeroFrame.EventsManager;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class Networking {
+/**
+ * Static class for raising Networking events
+ * @author Hammer
+ *
+ */
+public final class Networking {
 	
 	public static void raiseClientConnectedEvent(){
 		Object paramsObj[] = {};

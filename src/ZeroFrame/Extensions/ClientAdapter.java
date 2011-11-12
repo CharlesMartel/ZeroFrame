@@ -1,6 +1,8 @@
 package ZeroFrame.Extensions;
 
 /**
+ * Adapter to interact with clients.
+ * 
  * @author Hammer
  * 
  */

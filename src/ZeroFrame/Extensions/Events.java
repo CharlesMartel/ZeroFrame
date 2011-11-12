@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
  */
 public final class Events {
 	
-	public void registerExtensionsLoadedEvent(String methodName, Object object) throws SecurityException, NoSuchMethodException{
+	public static void registerExtensionsLoadedEvent(String methodName, Object object) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -31,7 +31,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerApplicationReadyEvent(String methodName, Object object) throws SecurityException, NoSuchMethodException{
+	public static void registerApplicationReadyEvent(String methodName, Object object) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -49,7 +49,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerClientConnectedEvent(String methodName, Object object) throws SecurityException, NoSuchMethodException{
+	public static void registerClientConnectedEvent(String methodName, Object object) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -67,7 +67,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerMessageReceivedEvent(String methodName, Object object) throws SecurityException, NoSuchMethodException{
+	public static void registerMessageReceivedEvent(String methodName, Object object) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -85,7 +85,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerMessageReceivedEvent(String methodName, Object object, String[] parameters) throws SecurityException, NoSuchMethodException{
+	public static void registerMessageReceivedEvent(String methodName, Object object, String[] parameters) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -104,7 +104,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerMessageReceivedEvent(String methodName, Object object, GrammarMatrix grammarMatrix) throws SecurityException, NoSuchMethodException{
+	public static void registerMessageReceivedEvent(String methodName, Object object, GrammarMatrix grammarMatrix) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -120,10 +120,11 @@ public final class Events {
 			ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventMethods.add(invokable);
 			ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventObjects.add(object);
 			ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventParameters.add(grammarMatrix);
+			ZeroFrame.Analysis.SpeechConfiguration.Grammar.addGrammarMatrix(grammarMatrix);
 		}
 	}
 	
-	public void registerSpeechReceivedEvent(String methodName, Object object) throws SecurityException, NoSuchMethodException{
+	public static void registerSpeechReceivedEvent(String methodName, Object object){
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -141,7 +142,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerSpeechReceivedEvent(String methodName, Object object, String[] parameters) throws SecurityException, NoSuchMethodException{
+	public static void registerSpeechReceivedEvent(String methodName, Object object, String[] parameters){
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -160,7 +161,7 @@ public final class Events {
 		}
 	}
 	
-	public void registerSpeechReceivedEvent(String methodName, Object object, GrammarMatrix grammarMatrix) throws SecurityException, NoSuchMethodException{
+	public static void registerSpeechReceivedEvent(String methodName, Object object, GrammarMatrix grammarMatrix) {
 		Class<?> currentClass = object.getClass();
 		Method[] invokables = currentClass.getDeclaredMethods();
 		Method invokable = null;
@@ -176,6 +177,7 @@ public final class Events {
 			ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventMethods.add(invokable);
 			ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventObjects.add(object);
 			ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventParameters.add(grammarMatrix);
+			ZeroFrame.Analysis.SpeechConfiguration.Grammar.addGrammarMatrix(grammarMatrix);
 		}
 	}
 

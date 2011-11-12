@@ -21,11 +21,15 @@ public class Config {
 	//whether or not the server will run in headless mode
 	public static Boolean headlessMode;
 	
+	//grammar file folder
+	public static String grammarFolder;
+	
 	public static Boolean loadConfiguration(){		
 		extensionFolder = "Extensions";
 		languageModelFolder = "LanguageModels";
 		headlessMode = true;
 		serverPort = 8500;
+		grammarFolder = "\\Documents and Settings\\hitsynth\\git\\ZeroFrame";
 		return true;
 	}
 	

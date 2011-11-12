@@ -1,6 +1,9 @@
 package ZeroFrame.Analysis.SpeechConfiguration;
 
 import edu.cmu.sphinx.jsgf.JSGFGrammar;
+import edu.cmu.sphinx.jsgf.JSGFRuleGrammarFactory;
+import edu.cmu.sphinx.jsgf.JSGFRuleGrammarManager;
+import edu.cmu.sphinx.jsgf.rule.JSGFRule;
 import edu.cmu.sphinx.linguist.acoustic.UnitManager;
 import edu.cmu.sphinx.linguist.acoustic.tiedstate.Sphinx3Loader;
 import edu.cmu.sphinx.linguist.acoustic.tiedstate.TiedStateAcousticModel;
@@ -72,12 +75,12 @@ public class GenericConfiguration extends Sphinx4BaseConfiguration {
     }
 
     protected void initLinguist() throws MalformedURLException, ClassNotFoundException {
-    	
+
         this.grammar = new JSGFGrammar(
                 // URL baseURL,
-                "file:\\Documents and Settings\\hitsynth\\git\\ZeroFrame",
+                "file:" + ZeroFrame.Config.grammarFolder,
                 logMath, // LogMath logMath,
-                "hello", // String grammarName,
+                "zfgrammar", // String grammarName,
                 false, // boolean showGrammar,
                 false, // boolean optimizeGrammar,
                 false, // boolean addSilenceWords,

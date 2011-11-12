@@ -80,4 +80,8 @@ public class TextAnalyzer {
 		}
 	}
 	
+	public static boolean matrixMatchCheck(ZeroFrame.Extensions.GrammarMatrix grammarMatrix, String phrase){
+		return true;
+	}
+	
 }

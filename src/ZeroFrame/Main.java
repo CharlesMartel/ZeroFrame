@@ -20,7 +20,7 @@ public class Main {
 		Config.initializeSystemObjects();
 
 		ZeroFrame.ExtensionsManager.Extensions.loadModules(Config.extensionFolder);
-		
+		ZeroFrame.Analysis.SpeechConfiguration.Grammar.initializeGrammar();
 		ZeroFrame.EventsManager.Startup.raiseExtensionsLoadedEvent();
 		
 		ZeroFrame.Networking.Server Server = new ZeroFrame.Networking.Server();

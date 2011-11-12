@@ -16,7 +16,7 @@ import edu.cmu.sphinx.util.props.ConfigurationManager;
 public class SpeechAnalyzer {
 
 	GenericConfiguration config;
-	Recognizer recognizer;
+	Recognizer recognizer = new Recognizer();
 	
 	public SpeechAnalyzer(){		
 		try {
@@ -64,6 +64,5 @@ public class SpeechAnalyzer {
 		} else {
 			//Audio heard but likely not speech data, ignore and move on.
 		}		
-	}
-	
+	}	
 }

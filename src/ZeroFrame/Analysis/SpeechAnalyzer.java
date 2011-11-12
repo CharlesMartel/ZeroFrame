@@ -13,13 +13,12 @@ import edu.cmu.sphinx.recognizer.Recognizer;
 import edu.cmu.sphinx.result.Result;
 import edu.cmu.sphinx.util.props.ConfigurationManager;
 
-public class VoiceAnalyzer {
-	
-	//ConfigurationManager configurationManager;
+public class SpeechAnalyzer {
+
 	GenericConfiguration config;
 	Recognizer recognizer;
 	
-	public VoiceAnalyzer(){		
+	public SpeechAnalyzer(){		
 		try {
 			config = new GenericConfiguration();
 		} catch (MalformedURLException e) {
@@ -38,7 +37,6 @@ public class VoiceAnalyzer {
 			recognizer.allocate();
 		}
 		
-		
 	}
 	
 	public void analyzeUtterance(byte[] utteranceStream, ZeroFrame.Networking.Client sendingClient){ 
@@ -51,9 +49,20 @@ public class VoiceAnalyzer {
         Result result = recognizer.recognize();
 		if (result != null) {
 			String resultText = result.getBestFinalResultNoFiller();
-			System.out.println("You said: " + resultText + '\n');
+			if(!resultText.trim().equalsIgnoreCase("")){
+				
+				//For testing
+				//System.out.println("You said: " + resultText + '\n');
+				
+				//tokenize the result, fire the event
+				ZeroFrame.EventsManager.Speech.raiseSpeechReceivedEvent(sendingClient, resultText, audioStream);
+			}else{
+				//there was voice data, but the recognizer had trouble processing it... maybe respond back 
+				//"I cant hear you" or something?
+			}
+			
 		} else {
-			System.out.println("I can't hear what you said.\n");
+			//Audio heard but likely not speech data, ignore and move on.
 		}		
 	}
 	

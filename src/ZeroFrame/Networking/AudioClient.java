@@ -17,7 +17,7 @@ public class AudioClient extends Thread {
 	private DataOutputStream Output = null;
 	private ReceiveData receiveData = null;
 	private SendData sendData = null;
-	private ZeroFrame.Analysis.VoiceAnalyzer voiceAnalyzer = new ZeroFrame.Analysis.VoiceAnalyzer();
+	private ZeroFrame.Analysis.SpeechAnalyzer voiceAnalyzer = new ZeroFrame.Analysis.SpeechAnalyzer();
 
 	public AudioClient(Client parentClient) {
 		myClient = parentClient;

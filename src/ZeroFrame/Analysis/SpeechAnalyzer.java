@@ -52,7 +52,7 @@ public class SpeechAnalyzer {
 			if(!resultText.trim().equalsIgnoreCase("")){
 				
 				//For testing
-				//System.out.println("You said: " + resultText + '\n');
+				System.out.println("You said: " + resultText + '\n');
 				
 				//tokenize the result, fire the event
 				ZeroFrame.EventsManager.Speech.raiseSpeechReceivedEvent(sendingClient, resultText, audioStream);

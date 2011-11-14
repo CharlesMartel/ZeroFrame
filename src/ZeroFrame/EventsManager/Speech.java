@@ -36,12 +36,30 @@ public final class Speech {
 		}
 
 		// Parameterized Event
-		count = ZeroFrame.Events.Speech.SpeechReceivedParameterizedEventObjects
-				.size();
+		count = ZeroFrame.Events.Speech.SpeechReceivedParameterizedEventObjects.size();
 		for (int index = 0; index < count; index++) {
 			if (ZeroFrame.Analysis.TextAnalyzer.parameterMatchCheck(ZeroFrame.Events.Speech.SpeechReceivedParameterizedEventParameters.get(index), parsedSpeech)) {
 				try {
 					ZeroFrame.Events.Speech.SpeechReceivedParameterizedEventMethods.get(index).invoke(ZeroFrame.Events.Speech.SpeechReceivedParameterizedEventObjects.get(index), paramsObj);
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				}
+			}
+		}
+		
+		// Grammared Event
+		count = ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventObjects.size();
+		for (int index = 0; index < count; index++) {
+			if (ZeroFrame.Analysis.TextAnalyzer.matrixMatchCheck(ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventParameters.get(index), parsedSpeech)) {
+				try {
+					ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventMethods.get(index).invoke(ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventObjects.get(index), paramsObj);
 				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block
 					System.out.println(e.toString());

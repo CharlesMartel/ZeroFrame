@@ -53,5 +53,24 @@ public final class Messaging {
 				}
 			}
 		}
+		
+		//Grammared Event
+		count = ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventObjects.size();			
+		for(int index = 0; index < count; index++){
+			if(ZeroFrame.Analysis.TextAnalyzer.matrixMatchCheck(ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventParameters.get(index), payload)){			
+				try {
+					ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventMethods.get(index).invoke(ZeroFrame.Events.Messaging.MessageReceivedGrammaredEventObjects.get(index), paramsObj);
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				}
+			}
+		}
 	}
 }

@@ -86,7 +86,7 @@ public final class Grammar {
 		}
 		
 		public static void commit(){
-			File gramFile = new File("zfgrammar.gram");
+			File gramFile = new File(ZeroFrame.Config.grammarFolder + "\\zfgrammar.gram");
 			if(gramFile.exists()){
 				gramFile.delete();
 			}

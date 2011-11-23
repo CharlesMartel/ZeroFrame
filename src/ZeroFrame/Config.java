@@ -1,17 +1,10 @@
 package ZeroFrame;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * The configuration options for ZeroFrame.
@@ -20,6 +13,12 @@ import java.io.IOException;
  *
  */
 public class Config {
+	
+	//The properties file object
+	private static Properties config = new Properties();
+	
+	//Current working directory
+	private static String workingDirectory;
 	
 	//The folder where all extensions are to be held
 	public static String extensionFolder;
@@ -38,35 +37,27 @@ public class Config {
 	
 	public static Boolean loadConfiguration(){		
 		
-		/*
+		/*FileInputStream inputStream;
 		try {
-			File fXmlFile = new File("zfconfig.xml");
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder;
-			dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
-			doc.getDocumentElement().normalize();
-			System.out.println(doc.getTextContent());
-			System.exit(0);
-			extensionFolder = doc.getElementById("extension-location").getNodeValue();
-			System.out.println(extensionFolder);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
+			inputStream = new FileInputStream("myPropertiesFile.properties");
+			config.load(inputStream);
+			//String myPropValue = myProps.getProperty("propKey");
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		*/
-		
+		}*/
+		        
+		//get the current running directory
+		workingDirectory = System.getProperty("user.dir");		
 		extensionFolder = "Extensions";
 		languageModelFolder = "LanguageModels";
 		headlessMode = true;
 		serverPort = 8500;
-		grammarFolder = "\\Documents and Settings\\hitsynth\\git\\ZeroFrame";
+		//The grammar file gets created in the current working directory
+		grammarFolder = workingDirectory;
 		//grammarFolder = "grammar";
 		return true;
 	}
@@ -79,11 +70,4 @@ public class Config {
 		ZeroFrame.Analysis.TextAnalyzer.initialize();
 	}
 	
-	private static String getTagValue(String sTag, Element eElement) {
-		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
-	 
-	        Node nValue = (Node) nlList.item(0);
-	 
-		return nValue.getNodeValue();
-	  }
 }

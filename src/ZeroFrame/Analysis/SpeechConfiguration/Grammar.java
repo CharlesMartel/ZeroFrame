@@ -100,7 +100,7 @@ public final class Grammar {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
-			System.out.println(fileString);
+			//System.out.println(fileString);
 		}
 	}
 	

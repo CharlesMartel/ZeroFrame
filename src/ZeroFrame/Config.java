@@ -52,8 +52,8 @@ public class Config {
 		        
 		//get the current running directory
 		workingDirectory = System.getProperty("user.dir");		
-		extensionFolder = "Extensions";
-		languageModelFolder = "LanguageModels";
+		extensionFolder = "extensions";
+		languageModelFolder = "languagemodels";
 		headlessMode = true;
 		serverPort = 8500;
 		//The grammar file gets created in the current working directory

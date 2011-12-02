@@ -51,6 +51,10 @@ public class GrammarMatrix {
 		return sequence;
 	}
 	
+	/**
+	 * Internal class that replaces simple arrays of phrases
+	 * @author Hammer *
+	 */
 	public class PhraseArray{
 		
 		String[] phraseStrings;

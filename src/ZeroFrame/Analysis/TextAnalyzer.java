@@ -113,6 +113,8 @@ public class TextAnalyzer {
 		return true;
 	}
 	
+	
+	//TODO: Add the optional grammar parameter
 	private static ArrayList<String[]> deconstructGrammarMatrix(ZeroFrame.Extensions.GrammarMatrix grammarMatrix){
 		ArrayList<String[]> arraySequence = new ArrayList<String[]>();
 		ArrayList sequence = grammarMatrix.getPhraseSequence();

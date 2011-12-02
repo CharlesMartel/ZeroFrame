@@ -10,7 +10,13 @@ package ZeroFrame.Extensions;
  *
  */
 public abstract class Module {	
+	
+	//Required Properties
 	public abstract String getName();
 	public abstract String getVersion();
 	public abstract String getAuthor();
+	
+	public Module(){
+		
+	}
 }

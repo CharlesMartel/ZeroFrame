@@ -27,7 +27,7 @@ public class Main {
 		
 		//ZeroFrame.Data.DatabaseController.executeGeneric("CREATE TABLE test (id int, name varchar(255))");
 		//ZeroFrame.Data.DatabaseController.executeGeneric("INSERT INTO test VALUES (1, 'Darrell')");
-		ResultSet result = ZeroFrame.Data.DatabaseController.executeQuery("SELECT * FROM test WHERE id = 1");
+		//ResultSet result = ZeroFrame.Data.DatabaseController.executeQuery("SELECT * FROM test WHERE id = 1");
 		
 		while (result.next()) {
 			String user = result.getString("name");

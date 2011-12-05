@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import ZeroFrame.Extensions.Module;
 
 /**
- * A factory for working with datasets, records, and other data objects
+ * A factory for working with data sets, records, and other data objects
  * 
  * @author Hammer
  */
@@ -35,11 +35,15 @@ public class DataFactory {
 	public abstract class DataType {
 		
 		public abstract DataFactory.DataTypes getType();
-		
+		protected DataRecord parent;
 		protected boolean set = false;
 		
 		public boolean isset(){
 			return set;
+		}
+		
+		protected void update(){
+			parent.update();
 		}
 	}
 
@@ -49,6 +53,7 @@ public class DataFactory {
 		private String prefix = null;
 		private HashMap<String, DataTypes> fields = new HashMap<String, DataTypes>();
 		private HashMap<String, DataType> emptySet = new HashMap<String, DataType>();
+		private DataRecord defaultRecord;
 		private ArrayList<DataRecord> records = new ArrayList<DataRecord>();
 		private int recordPointer = 0;
 		private String tableName = null;
@@ -67,25 +72,25 @@ public class DataFactory {
 				fields.put(fieldName, fieldType);
 				switch (fieldType) {
 					case INTEGER:
-						emptySet.put(fieldName, new IntegerDataType());
+						emptySet.put(fieldName, new IntegerDataType(defaultRecord));
 						break;
 					case LONG:
-						emptySet.put(fieldName, new LongDataType());
+						emptySet.put(fieldName, new LongDataType(defaultRecord));
 						break;
 					case FLOAT:
-						emptySet.put(fieldName, new FloatDataType());
+						emptySet.put(fieldName, new FloatDataType(defaultRecord));
 						break;
 					case DOUBLE:
-						emptySet.put(fieldName, new DoubleDataType());
+						emptySet.put(fieldName, new DoubleDataType(defaultRecord));
 						break;
 					case BOOLEAN:
-						emptySet.put(fieldName, new BooleanDataType());
+						emptySet.put(fieldName, new BooleanDataType(defaultRecord));
 						break;
 					case STRING:
-						emptySet.put(fieldName, new StringDataType());
+						emptySet.put(fieldName, new StringDataType(defaultRecord));
 						break;
 					case DATA_SET:
-						emptySet.put(fieldName, new DataSetDataType());
+						emptySet.put(fieldName, new DataSetDataType(defaultRecord));
 						break;
 					default:
 						break;
@@ -100,25 +105,25 @@ public class DataFactory {
 				fields.put(fieldName, fieldType);
 				switch (fieldType) {
 					case INTEGER:
-						emptySet.put(fieldName, new IntegerDataType());
+						emptySet.put(fieldName, new IntegerDataType(defaultRecord));
 						break;
 					case LONG:
-						emptySet.put(fieldName, new LongDataType());
+						emptySet.put(fieldName, new LongDataType(defaultRecord));
 						break;
 					case FLOAT:
-						emptySet.put(fieldName, new FloatDataType());
+						emptySet.put(fieldName, new FloatDataType(defaultRecord));
 						break;
 					case DOUBLE:
-						emptySet.put(fieldName, new DoubleDataType());
+						emptySet.put(fieldName, new DoubleDataType(defaultRecord));
 						break;
 					case BOOLEAN:
-						emptySet.put(fieldName, new BooleanDataType());
+						emptySet.put(fieldName, new BooleanDataType(defaultRecord));
 						break;
 					case STRING:
-						emptySet.put(fieldName, new StringDataType());
+						emptySet.put(fieldName, new StringDataType(defaultRecord));
 						break;
 					case DATA_SET:
-						emptySet.put(fieldName, new DataSetDataType());
+						emptySet.put(fieldName, new DataSetDataType(defaultRecord));
 						break;
 					default:
 						break;
@@ -163,10 +168,20 @@ public class DataFactory {
 		public void loadAll() throws DataSetNotInitializedException {
 			if(!initialized){throw new DataSetNotInitializedException();}
 			String sql = "SELECT * FROM " + tableName;
-			runSQLLoad(sql);
+			try {
+				//this is a simple query that is sure to work.
+				runSQLLoad(sql);
+			} catch (FieldNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IncompatibleDataTypeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 
-		public void loadFiltered(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException {
+		public void loadFiltered(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException, IncompatibleDataTypeException {
 			if(!initialized){throw new DataSetNotInitializedException();}
 			fieldName = cleanStringForDatabase(fieldName);
 			//make sure field exists
@@ -317,7 +332,7 @@ public class DataFactory {
 				iterator = fields.entrySet().iterator();
 				while (iterator.hasNext()) {
 					Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
-					try{ //Gotta put it in a try for the FieldNotFoundException
+					try{ //Got to put it in a try for the FieldNotFoundException
 						switch (entry.getValue()) {
 							case INTEGER:
 								IntegerDataType tempint = ((IntegerDataType)record.getFieldValue(entry.getKey()));
@@ -386,7 +401,8 @@ public class DataFactory {
 				lastIdx = sql.length() - 2;
 			    sql = sql.substring(0, lastIdx);
 				sql += ")";				
-				runSQLCommand(sql);
+				int newId = ZeroFrame.Data.DatabaseController.executeInsert(sql);
+				record.recordid = newId;
 			}
 		}
 		
@@ -421,9 +437,10 @@ public class DataFactory {
 		}
 
 		public DataRecord next() {
-			if(records.size() < recordPointer){
+			if(records.size() > recordPointer){
+				DataRecord returnable = records.get(recordPointer);
 				recordPointer++;
-				return records.get(recordPointer);
+				return returnable;
 			}else{
 				recordPointer = 0;
 				return null;
@@ -532,7 +549,7 @@ public class DataFactory {
 			runSQLCommand(sql);
 		}
 
-		private void runSQLLoad(String sqlStatement) throws  DataSetNotInitializedException {
+		private void runSQLLoad(String sqlStatement) throws  DataSetNotInitializedException, FieldNotFoundException, IncompatibleDataTypeException {
 			ResultSet result = ZeroFrame.Data.DatabaseController.executeQuery(sqlStatement);
 			records.clear();			
 			try {
@@ -543,22 +560,22 @@ public class DataFactory {
 						Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
 						switch (entry.getValue()) {
 							case INTEGER:
-								record.setValue(entry.getKey(), new IntegerDataType(Integer.parseInt(result.getString(entry.getKey()))));
+								record.fields.put(entry.getKey(), new IntegerDataType(Integer.parseInt(result.getString(entry.getKey())), record));
 								break;
 							case LONG:
-								record.setValue(entry.getKey(), new LongDataType(Long.parseLong(result.getString(entry.getKey()))));
+								record.fields.put(entry.getKey(), new LongDataType(Long.parseLong(result.getString(entry.getKey())), record));
 								break;
 							case FLOAT:
-								record.setValue(entry.getKey(), new FloatDataType(Float.parseFloat(result.getString(entry.getKey()))));
+								record.fields.put(entry.getKey(), new FloatDataType(Float.parseFloat(result.getString(entry.getKey())), record));
 								break;
 							case DOUBLE:
-								record.setValue(entry.getKey(), new DoubleDataType(Double.parseDouble(result.getString(entry.getKey()))));
+								record.fields.put(entry.getKey(), new DoubleDataType(Double.parseDouble(result.getString(entry.getKey())), record));
 								break;
 							case BOOLEAN:
-								record.setValue(entry.getKey(), new BooleanDataType(Boolean.parseBoolean(result.getString(entry.getKey()))));
+								record.fields.put(entry.getKey(), new BooleanDataType(Boolean.parseBoolean(result.getString(entry.getKey())), record));
 								break;
 							case STRING:
-								record.setValue(entry.getKey(), new StringDataType(result.getString(entry.getKey())));
+								record.fields.put(entry.getKey(), new StringDataType(result.getString(entry.getKey()), record));
 								break;
 							case DATA_SET:
 								//TODO: Add functionality for datasets existing as fields in records							
@@ -630,16 +647,36 @@ public class DataFactory {
 
 	public class DataRecord {
 
-		private HashMap<String, DataType> fields = new HashMap<String, DataType>();
-		private int recordid = -1;
-		private DataSet parentWatcher = null;
+		protected HashMap<String, DataType> fields = new HashMap<String, DataType>();
+		protected int recordid = -1;
+		private DataSet parent = null;
 
 		protected DataRecord(int recordID, HashMap<String, DataType> emptySet, DataSet parentDataSet) {
 			recordid = recordID;
 			fields = emptySet;
-			parentWatcher = parentDataSet;
+			parent = parentDataSet;
+			//loop through fields and be sure that all types are associated with this record
+			Iterator<Entry<String, DataType>> iterator = fields.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, DataType> entry = (Map.Entry<String, DataType>) iterator.next();
+				entry.getValue().parent = this;
+			}
+			
 		}
-
+		
+		protected void update(){
+			if(parent != null){
+				try {
+					parent.updateRecord(this);
+				} catch (DataSetNotInitializedException e) {
+					//Being that only a data set can create a data record and you cant get a data record
+					//from an uninitialized data set, this would never happen, but java freaks without it
+					//so yeah....
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		public int getRecordID() {
 			return recordid;
 		}
@@ -649,45 +686,111 @@ public class DataFactory {
 		}
 
 		public DataType getFieldValue(String fieldName)	throws FieldNotFoundException {
-			fieldName = parentWatcher.cleanStringForDatabase(fieldName);
+			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
 				return fields.get(fieldName);
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-
-		public void setValue(String fieldName, DataType value) {
+		
+		public IntegerDataType getIntegerFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				//TODO: check for field compatibility
-				fields.put(fieldName, value);
-				
-				if(parentWatcher != null){
-					try {
-						parentWatcher.updateRecord(this);
-					} catch (DataSetNotInitializedException e) {
-						//Being that only a data set can create a data record and you cant get a data record
-						//from an uninitialized data set, this would never happen, but java freaks without it
-						//so yeah....
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				if(fields.get(fieldName).getType() != DataTypes.INTEGER){
+					throw new IncompatibleDataTypeException(DataTypes.INTEGER, fields.get(fieldName).getType());
+				}else{
+					return (IntegerDataType)fields.get(fieldName);
 				}
-				
-			}
-		}
-
-		public DataTypes getFieldType(String fieldName)
-				throws FieldNotFoundException {
-			if (fields.containsKey(fieldName)) {
-				return fields.get(fieldName).getType();
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
 		
-		protected void setParentDataSet(DataSet parentDataSet){
-			parentWatcher = parentDataSet;
+		public LongDataType getLongFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
+			if (fields.containsKey(fieldName)) {
+				if(fields.get(fieldName).getType() != DataTypes.LONG){
+					throw new IncompatibleDataTypeException(DataTypes.LONG, fields.get(fieldName).getType());
+				}else{
+					return (LongDataType)fields.get(fieldName);
+				}
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
+		}
+		
+		public FloatDataType getFloatFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
+			if (fields.containsKey(fieldName)) {
+				if(fields.get(fieldName).getType() != DataTypes.FLOAT){
+					throw new IncompatibleDataTypeException(DataTypes.FLOAT, fields.get(fieldName).getType());
+				}else{
+					return (FloatDataType)fields.get(fieldName);
+				}
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
+		}
+		
+		public DoubleDataType getDoubleFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
+			if (fields.containsKey(fieldName)) {
+				if(fields.get(fieldName).getType() != DataTypes.DOUBLE){
+					throw new IncompatibleDataTypeException(DataTypes.DOUBLE, fields.get(fieldName).getType());
+				}else{
+					return (DoubleDataType)fields.get(fieldName);
+				}
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
+		}
+		
+		public BooleanDataType getBooleanFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
+			if (fields.containsKey(fieldName)) {
+				if(fields.get(fieldName).getType() != DataTypes.BOOLEAN){
+					throw new IncompatibleDataTypeException(DataTypes.BOOLEAN, fields.get(fieldName).getType());
+				}else{
+					return (BooleanDataType)fields.get(fieldName);
+				}
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
+		}
+		
+		public StringDataType getStringFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
+			if (fields.containsKey(fieldName)) {
+				if(fields.get(fieldName).getType() != DataTypes.STRING){
+					throw new IncompatibleDataTypeException(DataTypes.STRING, fields.get(fieldName).getType());
+				}else{
+					return (StringDataType)fields.get(fieldName);
+				}
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
+		}
+		
+		public DataSetDataType getDataSetFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+			fieldName = parent.cleanStringForDatabase(fieldName);
+			if (fields.containsKey(fieldName)) {
+				if(fields.get(fieldName).getType() != DataTypes.DATA_SET){
+					throw new IncompatibleDataTypeException(DataTypes.DATA_SET, fields.get(fieldName).getType());
+				}else{
+					return (DataSetDataType)fields.get(fieldName);
+				}
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
+		}
+		
+		public DataTypes getFieldType(String fieldName)throws FieldNotFoundException {
+			if (fields.containsKey(fieldName)) {
+				return fields.get(fieldName).getType();
+			} else {
+				throw new FieldNotFoundException(fieldName);
+			}
 		}
 	}
 	
@@ -703,16 +806,20 @@ public class DataFactory {
 			return DataTypes.INTEGER;
 		}
 		
-		public IntegerDataType(){}
+		public IntegerDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public IntegerDataType(int intValue){
+		public IntegerDataType(int intValue, DataRecord parentRecord){
 			value = intValue;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public void setValue(int intValue){
 			value = intValue;
 			set = true;
+			update();
 		}
 		
 		public int getValue(){
@@ -730,11 +837,14 @@ public class DataFactory {
 			return DataTypes.LONG;
 		}		
 		
-		public LongDataType(){}
+		public LongDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public LongDataType(Long longValue){
+		public LongDataType(Long longValue, DataRecord parentRecord){
 			value = longValue;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public Long getValue(){
@@ -744,6 +854,7 @@ public class DataFactory {
 		public void setValue(Long longValue){
 			value = longValue;
 			set = true;
+			update();
 		}
 	
 	}
@@ -757,16 +868,20 @@ public class DataFactory {
 			return DataTypes.FLOAT;
 		}
 		
-		public FloatDataType(){}
+		public FloatDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public FloatDataType(Float floatValue){
+		public FloatDataType(Float floatValue, DataRecord parentRecord){
 			value = floatValue;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public void setValue(Float floatValue){
 			value = floatValue;
 			set = true;
+			update();
 		}
 		
 		public float getValue(){
@@ -784,16 +899,20 @@ public class DataFactory {
 			return DataTypes.DOUBLE;
 		}
 		
-		public DoubleDataType(){}
+		public DoubleDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public DoubleDataType(double doubleValue){
+		public DoubleDataType(double doubleValue, DataRecord parentRecord){
 			value = doubleValue;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public void setValue(double doubleValue){
 			value = doubleValue;
 			set = true;
+			update();
 		}
 		
 		public double getValue(){
@@ -811,16 +930,20 @@ public class DataFactory {
 			return DataTypes.BOOLEAN;
 		}		
 		
-		public BooleanDataType(){}
+		public BooleanDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public BooleanDataType(boolean boolValue){
+		public BooleanDataType(boolean boolValue, DataRecord parentRecord){
 			value = boolValue;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public void setValue(boolean boolValue){
 			value = boolValue;
 			set = true;
+			update();
 		}
 		
 		public boolean getValue(){
@@ -838,16 +961,20 @@ public class DataFactory {
 			return DataTypes.STRING;
 		}		
 		
-		public StringDataType(){}
+		public StringDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public StringDataType(String stringValue){
+		public StringDataType(String stringValue, DataRecord parentRecord){
 			value = stringValue;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public void setValue(String stringValue){
 			value = stringValue;
 			set = true;
+			update();
 		}
 		
 		public String getValue(){
@@ -865,16 +992,20 @@ public class DataFactory {
 			return DataTypes.DATA_SET;
 		}
 		
-		public DataSetDataType(){}
+		public DataSetDataType(DataRecord parentRecord){
+			parent = parentRecord;
+		}
 		
-		public DataSetDataType(DataSet dataSet){
+		public DataSetDataType(DataSet dataSet, DataRecord parentRecord){
 			value = dataSet;
 			set = true;
+			parent = parentRecord;
 		}
 		
 		public void setDataSet(DataSet dataSet){
 			value = dataSet;
 			set = true;
+			update();
 		}
 		
 		public DataSet getDataSet(){

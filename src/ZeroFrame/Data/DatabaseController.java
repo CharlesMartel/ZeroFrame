@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 
 /**
@@ -69,6 +70,26 @@ public class DatabaseController {
 			e.printStackTrace();
 			boolean result = false;
 			return result;	
+		}	
+	}
+	
+	public static int executeInsert(String query){
+		if(!initialized){initialize();}
+		try {
+			System.out.println(query);
+			PreparedStatement statement = databaseConnection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement.executeUpdate();
+			ResultSet keys = statement.getGeneratedKeys();
+			int fieldKey = 0;
+			while(keys.next()){
+				fieldKey = keys.getInt(1);
+			}
+			
+			return fieldKey;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;	
 		}	
 	}
 	

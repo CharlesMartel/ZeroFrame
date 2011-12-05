@@ -67,7 +67,7 @@ public class Config {
 	}
 	
 	public static void initializeSystemObjects(){
-		ZeroFrame.Analysis.TextAnalyzer.initialize();
+		//ZeroFrame.Analysis.TextAnalyzer.initialize();
 	}
 	
 }

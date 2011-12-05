@@ -4,6 +4,7 @@
 package ZeroFrame.Data;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +60,7 @@ public class DatabaseController {
 	public static boolean executeGeneric(String query){
 		if(!initialized){initialize();}
 		try {
+			System.out.println(query);
 			PreparedStatement statement = databaseConnection.prepareStatement(query);
 			boolean result = statement.execute();
 			return result;
@@ -83,5 +85,18 @@ public class DatabaseController {
 			return result;	
 		}	
 	}
+	
+	public static DatabaseMetaData getMetaData(){
+		if(!initialized){initialize();}
+		try {
+			return databaseConnection.getMetaData();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 
 }

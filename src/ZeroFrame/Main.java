@@ -5,6 +5,17 @@ package ZeroFrame;
 
 import java.sql.ResultSet;
 
+import ZeroFrame.Extensions.Toolbox.DataFactory;
+import ZeroFrame.Extensions.Toolbox.DataFactory.BooleanDataType;
+import ZeroFrame.Extensions.Toolbox.DataFactory.DataRecord;
+import ZeroFrame.Extensions.Toolbox.DataFactory.DataSet;
+import ZeroFrame.Extensions.Toolbox.DataFactory.DataSetLockedException;
+import ZeroFrame.Extensions.Toolbox.DataFactory.DataSetNotInitializedException;
+import ZeroFrame.Extensions.Toolbox.DataFactory.DataTypes;
+import ZeroFrame.Extensions.Toolbox.DataFactory.FieldNotFoundException;
+import ZeroFrame.Extensions.Toolbox.DataFactory.IntegerDataType;
+import ZeroFrame.Extensions.Toolbox.DataFactory.StringDataType;
+
 /**
  * @author Hammer
  *
@@ -21,20 +32,8 @@ public class Main {
 		Config.loadConfiguration();
 		Config.initializeSystemObjects();
 		ZeroFrame.Data.DatabaseController.initialize();
+
 		
-		
-		
-		
-		//ZeroFrame.Data.DatabaseController.executeGeneric("CREATE TABLE test (id int, name varchar(255))");
-		//ZeroFrame.Data.DatabaseController.executeGeneric("INSERT INTO test VALUES (1, 'Darrell')");
-		ResultSet result = ZeroFrame.Data.DatabaseController.executeQuery("SELECT * FROM test WHERE id = 1");
-		
-		while (result.next()) {
-			String user = result.getString("name");
-			String number = result.getString("id");
-			System.out.println("User: " + user);
-			System.out.println("ID: " + number);
-		}
 		
 		 
 		
@@ -48,7 +47,6 @@ public class Main {
 		ZeroFrame.EventsManager.Startup.raiseApplicationReadyEvent();
 		
 		Application App = new Application();
-		App.start();
 		System.out.println("Ready.");
 	}
 }

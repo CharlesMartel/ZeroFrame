@@ -2,12 +2,14 @@ package ZeroFrame;
 
 import ZeroFrame.Extensions.Toolbox.DataFactory;
 import ZeroFrame.Extensions.Toolbox.DataFactory.BooleanDataType;
+import ZeroFrame.Extensions.Toolbox.DataFactory.CompatibleFieldNotFoundException;
 import ZeroFrame.Extensions.Toolbox.DataFactory.DataRecord;
 import ZeroFrame.Extensions.Toolbox.DataFactory.DataSet;
 import ZeroFrame.Extensions.Toolbox.DataFactory.DataSetLockedException;
 import ZeroFrame.Extensions.Toolbox.DataFactory.DataSetNotInitializedException;
 import ZeroFrame.Extensions.Toolbox.DataFactory.DataTypes;
 import ZeroFrame.Extensions.Toolbox.DataFactory.FieldNotFoundException;
+import ZeroFrame.Extensions.Toolbox.DataFactory.FilterValueNotSetException;
 import ZeroFrame.Extensions.Toolbox.DataFactory.IncompatibleDataTypeException;
 import ZeroFrame.Extensions.Toolbox.DataFactory.IntegerDataType;
 import ZeroFrame.Extensions.Toolbox.DataFactory.StringDataType;
@@ -45,10 +47,12 @@ public class Application extends ZeroFrame.Extensions.Module {
 			helloset.fieldAdd("field 2", DataTypes.BOOLEAN);
 			helloset.fieldAdd("field3", DataTypes.STRING);
 			helloset.initialize();
-			helloset.loadAll();
+			IntegerDataType filter = dFactory.new IntegerDataType();
+			filter.setValue(3);
+			helloset.loadFiltered("field1", filter);
 			DataRecord currRecord;
 			while((currRecord = helloset.next()) != null){
-				System.out.println(currRecord.getStringFieldValue("field3").getValue());
+				System.out.println(currRecord.getStringFieldValue("field1").getValue());
 			}
 			//DataRecord record = helloset.getRecordTemplate();
 			//IntegerDataType idt = (IntegerDataType) record.getFieldValue("field1");
@@ -67,6 +71,12 @@ public class Application extends ZeroFrame.Extensions.Module {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FieldNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CompatibleFieldNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FilterValueNotSetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

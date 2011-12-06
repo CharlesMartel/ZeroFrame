@@ -181,7 +181,7 @@ public class DataFactory {
 			
 		}
 
-		public void loadFiltered(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException, IncompatibleDataTypeException {
+		public void loadFiltered(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException, IncompatibleDataTypeException, FilterValueNotSetException {
 			if(!initialized){throw new DataSetNotInitializedException();}
 			fieldName = cleanStringForDatabase(fieldName);
 			//make sure field exists
@@ -193,6 +193,10 @@ public class DataFactory {
 			//make sure types match
 			if(recordType != filterObject.getType()){
 				throw new CompatibleFieldNotFoundException(filterObject.getType(), fieldName);
+			}
+			//make sure the filter object has a value
+			if(!filterObject.set){
+				throw new FilterValueNotSetException();
 			}
 			String sql = "SELECT * FROM " + tableName + " WHERE " + fieldName + " = ";
 			switch (filterObject.getType()) {
@@ -233,7 +237,7 @@ public class DataFactory {
 			runSQLLoad(sql);
 		}
 
-		public void filter(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException {
+		public void filter(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException, FilterValueNotSetException {
 			if(!initialized){throw new DataSetNotInitializedException();}
 			//make sure field exists
 			fieldName = cleanStringForDatabase(fieldName);
@@ -246,6 +250,10 @@ public class DataFactory {
 			if(recordType != filterObject.getType()){
 				throw new CompatibleFieldNotFoundException(filterObject.getType(), fieldName);
 			}			
+			//make sure the filter object has a value
+			if(!filterObject.set){
+				throw new FilterValueNotSetException();
+			}
 			//loop through records and remove any record that matches the filterObjects value for
 			// the specified field
 			for(DataRecord record: records){
@@ -794,6 +802,16 @@ public class DataFactory {
 		}
 	}
 	
+	//To be used later for more advanced filtering, not usable yet, so it stays private
+	private class Filter{
+		
+		protected ArrayList<String> fields = new ArrayList<String>();
+		
+		private Filter(){
+			
+		}
+	}
+	
 	// ********************************************************************************************
 	//Data Types
 	
@@ -805,6 +823,8 @@ public class DataFactory {
 		public DataTypes getType() {
 			return DataTypes.INTEGER;
 		}
+		
+		public IntegerDataType(){}
 		
 		public IntegerDataType(DataRecord parentRecord){
 			parent = parentRecord;
@@ -819,7 +839,9 @@ public class DataFactory {
 		public void setValue(int intValue){
 			value = intValue;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 		
 		public int getValue(){
@@ -836,6 +858,8 @@ public class DataFactory {
 		public DataTypes getType() {
 			return DataTypes.LONG;
 		}		
+		
+		public LongDataType(){}
 		
 		public LongDataType(DataRecord parentRecord){
 			parent = parentRecord;
@@ -854,7 +878,9 @@ public class DataFactory {
 		public void setValue(Long longValue){
 			value = longValue;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 	
 	}
@@ -867,6 +893,8 @@ public class DataFactory {
 		public DataTypes getType() {
 			return DataTypes.FLOAT;
 		}
+		
+		public FloatDataType(){}
 		
 		public FloatDataType(DataRecord parentRecord){
 			parent = parentRecord;
@@ -881,7 +909,9 @@ public class DataFactory {
 		public void setValue(Float floatValue){
 			value = floatValue;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 		
 		public float getValue(){
@@ -899,6 +929,8 @@ public class DataFactory {
 			return DataTypes.DOUBLE;
 		}
 		
+		public DoubleDataType(){}
+		
 		public DoubleDataType(DataRecord parentRecord){
 			parent = parentRecord;
 		}
@@ -912,7 +944,9 @@ public class DataFactory {
 		public void setValue(double doubleValue){
 			value = doubleValue;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 		
 		public double getValue(){
@@ -930,6 +964,8 @@ public class DataFactory {
 			return DataTypes.BOOLEAN;
 		}		
 		
+		public BooleanDataType(){}
+		
 		public BooleanDataType(DataRecord parentRecord){
 			parent = parentRecord;
 		}
@@ -943,7 +979,9 @@ public class DataFactory {
 		public void setValue(boolean boolValue){
 			value = boolValue;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 		
 		public boolean getValue(){
@@ -961,6 +999,8 @@ public class DataFactory {
 			return DataTypes.STRING;
 		}		
 		
+		public StringDataType(){}
+		
 		public StringDataType(DataRecord parentRecord){
 			parent = parentRecord;
 		}
@@ -974,7 +1014,9 @@ public class DataFactory {
 		public void setValue(String stringValue){
 			value = stringValue;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 		
 		public String getValue(){
@@ -992,6 +1034,8 @@ public class DataFactory {
 			return DataTypes.DATA_SET;
 		}
 		
+		public DataSetDataType(){}
+		
 		public DataSetDataType(DataRecord parentRecord){
 			parent = parentRecord;
 		}
@@ -1005,7 +1049,9 @@ public class DataFactory {
 		public void setDataSet(DataSet dataSet){
 			value = dataSet;
 			set = true;
-			update();
+			if(parent != null){
+				update();
+			}
 		}
 		
 		public DataSet getDataSet(){
@@ -1092,5 +1138,18 @@ public class DataFactory {
 		public DataSetNotInitializedException(){
 			super("An attempt to alter the data set was performed without the data set being initialized!");
 		}
+	}
+	
+	public class FilterValueNotSetException extends Exception{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7L;
+		
+		public FilterValueNotSetException(){
+			super("The passed in filter DataType object value is not set!");
+		}
+		
 	}
 }

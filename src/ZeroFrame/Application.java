@@ -1,5 +1,7 @@
 package ZeroFrame;
 
+import java.util.ArrayList;
+
 import ZeroFrame.Extensions.Toolbox.DataFactory;
 import ZeroFrame.Extensions.Toolbox.DataFactory.BooleanDataType;
 import ZeroFrame.Extensions.Toolbox.DataFactory.CompatibleFieldNotFoundException;
@@ -79,7 +81,8 @@ public class Application extends ZeroFrame.Extensions.Module {
 		} catch (FilterValueNotSetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}	
+		
 	}
 	
 	//TODO: Fix this method

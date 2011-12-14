@@ -30,8 +30,8 @@ public final class Speech {
 	
 	public static List<Method> SpeechReceivedGrammaredEventMethods = new ArrayList<Method>(0);
 	public static List<Object> SpeechReceivedGrammaredEventObjects = new ArrayList<Object>(0);
-	public static List<ZeroFrame.Extensions.GrammarMatrix> SpeechReceivedGrammaredEventParameters = new ArrayList<ZeroFrame.Extensions.GrammarMatrix>(0);	
-	public static void registerMessageReceivedEvent(Object caller, Method invokable, ZeroFrame.Extensions.GrammarMatrix grammarMatrix){
+	public static List<ZeroFrame.Extensions.Toolbox.GrammarMatrix> SpeechReceivedGrammaredEventParameters = new ArrayList<ZeroFrame.Extensions.Toolbox.GrammarMatrix>(0);	
+	public static void registerMessageReceivedEvent(Object caller, Method invokable, ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
 		SpeechReceivedGrammaredEventObjects.add(caller);
 		SpeechReceivedGrammaredEventMethods.add(invokable);
 		SpeechReceivedGrammaredEventParameters.add(grammarMatrix);

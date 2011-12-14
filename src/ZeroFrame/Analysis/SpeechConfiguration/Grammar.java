@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 import org.mozilla.javascript.tools.shell.Environment;
 
-import ZeroFrame.Extensions.GrammarMatrix;
-import ZeroFrame.Extensions.GrammarMatrix.PhraseArray;
+import ZeroFrame.Extensions.Toolbox.GrammarMatrix;
+import ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray;
 
 /**
  * @author Hammer
@@ -20,11 +20,11 @@ import ZeroFrame.Extensions.GrammarMatrix.PhraseArray;
  */
 public final class Grammar {
 	
-	private static ArrayList<ZeroFrame.Extensions.GrammarMatrix> matrices = new ArrayList<ZeroFrame.Extensions.GrammarMatrix>(0);
+	private static ArrayList<ZeroFrame.Extensions.Toolbox.GrammarMatrix> matrices = new ArrayList<ZeroFrame.Extensions.Toolbox.GrammarMatrix>(0);
 	
 	private static int ruleCount = 0;
 	
-	public static void addGrammarMatrix(ZeroFrame.Extensions.GrammarMatrix grammarMatrix){
+	public static void addGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
 		matrices.add(grammarMatrix);
 	}
 	
@@ -52,14 +52,14 @@ public final class Grammar {
 			fileString += fileHeader;
 		}
 		
-		public static int writeGrammarMatrix(ZeroFrame.Extensions.GrammarMatrix grammarMatrix){
+		public static int writeGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
 			ArrayList matrixSequence = grammarMatrix.getPhraseSequence();
 			String topDef = "public <rule" + Integer.toString(ruleCount) + "> = ";
 			int topDefRuleID = ruleCount;
 			ruleCount++;
 			for(int i = 0; i < matrixSequence.size(); i++){
-				if(matrixSequence.get(i) instanceof ZeroFrame.Extensions.GrammarMatrix.PhraseArray){
-					ZeroFrame.Extensions.GrammarMatrix.PhraseArray phraseArray = (PhraseArray) matrixSequence.get(i);
+				if(matrixSequence.get(i) instanceof ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray){
+					ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray phraseArray = (PhraseArray) matrixSequence.get(i);
 					String ruledef = "public <rule" + Integer.toString(ruleCount) + "> = ";
 					topDef += " <rule" + Integer.toString(ruleCount) + ">";
 					ruleCount++;					

@@ -5,6 +5,8 @@ package ZeroFrame.Extensions;
 
 import java.lang.reflect.Method;
 
+import ZeroFrame.Extensions.Toolbox.GrammarMatrix;
+
 /**
  * Static class for registering to ZeroFrame events.
  * 

@@ -81,7 +81,7 @@ public class TextAnalyzer {
 		}
 	}
 	
-	public static boolean matrixMatchCheck(ZeroFrame.Extensions.GrammarMatrix grammarMatrix, String phrase){
+	public static boolean matrixMatchCheck(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix, String phrase){
 		
 		//Declare a new array list to hold the array sequence
 		//then pick apart the grammar matrix and place the arrays into the sequence
@@ -115,15 +115,15 @@ public class TextAnalyzer {
 	
 	
 	//TODO: Add the optional grammar parameter
-	private static ArrayList<String[]> deconstructGrammarMatrix(ZeroFrame.Extensions.GrammarMatrix grammarMatrix){
+	private static ArrayList<String[]> deconstructGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
 		ArrayList<String[]> arraySequence = new ArrayList<String[]>();
 		ArrayList sequence = grammarMatrix.getPhraseSequence();
 		for(int index = 0; index < sequence.size(); index++){
-			if(sequence.get(index) instanceof ZeroFrame.Extensions.GrammarMatrix.PhraseArray){
-				String[] stringArray = ((ZeroFrame.Extensions.GrammarMatrix.PhraseArray) sequence.get(index)).getPhraseArray();
+			if(sequence.get(index) instanceof ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray){
+				String[] stringArray = ((ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray) sequence.get(index)).getPhraseArray();
 				arraySequence.add(stringArray);
 			} else {
-				ZeroFrame.Extensions.GrammarMatrix interiorMatrix = (ZeroFrame.Extensions.GrammarMatrix)sequence.get(index);
+				ZeroFrame.Extensions.Toolbox.GrammarMatrix interiorMatrix = (ZeroFrame.Extensions.Toolbox.GrammarMatrix)sequence.get(index);
 				ArrayList<String[]> recursionResult = deconstructGrammarMatrix(interiorMatrix);
 				for(int index2 = 0; index2 < recursionResult.size(); index2++){
 					arraySequence.add(recursionResult.get(index2));

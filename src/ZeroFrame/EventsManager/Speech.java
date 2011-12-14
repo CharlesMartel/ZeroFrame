@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.sound.sampled.AudioInputStream;
 
-import ZeroFrame.Extensions.ClientAdapter;
+import ZeroFrame.Extensions.Toolbox.ClientAdapter;
 
 /**
  * Static class for raising Speech events.

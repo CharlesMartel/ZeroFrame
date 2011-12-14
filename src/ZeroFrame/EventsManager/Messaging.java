@@ -4,7 +4,8 @@
 package ZeroFrame.EventsManager;
 
 import java.lang.reflect.InvocationTargetException;
-import ZeroFrame.Extensions.ClientAdapter;
+
+import ZeroFrame.Extensions.Toolbox.ClientAdapter;
 
 /**
  * Static class for raising client messaging events

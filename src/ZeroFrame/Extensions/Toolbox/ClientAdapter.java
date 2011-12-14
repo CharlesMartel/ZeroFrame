@@ -1,4 +1,4 @@
-package ZeroFrame.Extensions;
+package ZeroFrame.Extensions.Toolbox;
 
 /**
  * Adapter to interact with clients.

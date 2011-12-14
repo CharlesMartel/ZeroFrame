@@ -30,8 +30,8 @@ public final class Messaging {
 	
 	public static List<Method> MessageReceivedGrammaredEventMethods = new ArrayList<Method>(0);
 	public static List<Object> MessageReceivedGrammaredEventObjects = new ArrayList<Object>(0);
-	public static List<ZeroFrame.Extensions.GrammarMatrix> MessageReceivedGrammaredEventParameters = new ArrayList<ZeroFrame.Extensions.GrammarMatrix>(0);	
-	public static void registerMessageReceivedEvent(Object caller, Method invokable, ZeroFrame.Extensions.GrammarMatrix grammarMatrix){
+	public static List<ZeroFrame.Extensions.Toolbox.GrammarMatrix> MessageReceivedGrammaredEventParameters = new ArrayList<ZeroFrame.Extensions.Toolbox.GrammarMatrix>(0);	
+	public static void registerMessageReceivedEvent(Object caller, Method invokable, ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
 		MessageReceivedGrammaredEventObjects.add(caller);
 		MessageReceivedGrammaredEventMethods.add(invokable);
 		MessageReceivedGrammaredEventParameters.add(grammarMatrix);

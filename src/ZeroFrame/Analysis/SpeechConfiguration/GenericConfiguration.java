@@ -17,95 +17,90 @@ import java.util.ArrayList;
 
 public class GenericConfiguration extends Sphinx4BaseConfiguration {
 
-    public GenericConfiguration() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
-        super();
-    }
+	public GenericConfiguration() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
+		super();
+	}
 
-    protected void initCommon() {
-        super.initCommon();
+	protected void initCommon() {
+		super.initCommon();
 
-        this.absoluteBeamWidth = -1;
-        this.relativeBeamWidth = 1E-80;
-        this.wordInsertionProbability = 1E-36;
-        this.languageWeight = 8.0f;
-    }
+		this.absoluteBeamWidth = -1;
+		this.relativeBeamWidth = 1E-80;
+		this.wordInsertionProbability = 1E-36;
+		this.languageWeight = 8.0f;
+	}
 
-    protected void initModels() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
+	protected void initModels() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
 
-        this.unitManager = new UnitManager();
-        
-        //I pulled this code directly from the sphinx website, but the following line seems to not be correct
-        //I've made an amendment below        
-       /* this.modelLoader = new Sphinx3Loader(
-                "resource:/TIDIGITS_8gau_13dCep_16k_40mel_130Hz_6800Hz",
-                "wd_dependent_phone.500.mdef",
-                "wd_dependent_phone.cd_continuous_8gau/",
-                logMath,
-                unitManager,
-                true,
-                true,
-                39,
-                0.0f,
-                1e-7f,
-                0.0001f,
-                true);*/
-        
-        this.modelLoader = new Sphinx3Loader(
-                "resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz",
-                "mdef",
-                "",
-                logMath,
-                unitManager,
-                0.0f,
-                1e-7f,
-                0.0001f,
-                true);
+		this.unitManager = new UnitManager();
 
-        this.model = new TiedStateAcousticModel(modelLoader, unitManager, true);
+		// I pulled this code directly from the sphinx website, but the
+		// following line seems to not be correct
+		// I've made an amendment below
+		/*
+		 * this.modelLoader = new Sphinx3Loader(
+		 * "resource:/TIDIGITS_8gau_13dCep_16k_40mel_130Hz_6800Hz",
+		 * "wd_dependent_phone.500.mdef",
+		 * "wd_dependent_phone.cd_continuous_8gau/", logMath, unitManager, true,
+		 * true, 39, 0.0f, 1e-7f, 0.0001f, true);
+		 */
 
-        this.dictionary = new FastDictionary(
-                "resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/dict/cmudict.0.6d",
-                "resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/noisedict",
-                new ArrayList<URL>(),
-                false,
-                "<sil>",
-                false,
-                false,
-                unitManager);
-    }
+		this.modelLoader = new Sphinx3Loader(
+				"resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz",
+				"mdef",
+				"",
+				logMath,
+				unitManager,
+				0.0f,
+				1e-7f,
+				0.0001f,
+				true);
 
-    protected void initLinguist() throws MalformedURLException, ClassNotFoundException {
+		this.model = new TiedStateAcousticModel(modelLoader, unitManager, true);
 
-        this.grammar = new JSGFGrammar(
-                // URL baseURL,
-                "file:" + ZeroFrame.Config.grammarFolder,
-                logMath, // LogMath logMath,
-                "zfgrammar", // String grammarName,
-                false, // boolean showGrammar,
-                false, // boolean optimizeGrammar,
-                false, // boolean addSilenceWords,
-                false, // boolean addFillerWords,
-                dictionary // Dictionary dictionary
-        );
+		this.dictionary = new FastDictionary(
+				"resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/dict/cmudict.0.6d",
+				"resource:/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz/noisedict",
+				new ArrayList<URL>(),
+				false,
+				"<sil>",
+				false,
+				false,
+				unitManager);
+	}
 
-        this.linguist = new FlatLinguist(
-                model, // AcousticModel acousticModel,
-                logMath, // LogMath logMath,
-                grammar, // Grammar grammar,
-                unitManager, // UnitManager unitManager,
-                wordInsertionProbability, // double wordInsertionProbability,
-                1.0, // double silenceInsertionProbability,
-                1.0, // double fillerInsertionProbability,
-                1.0, // double unitInsertionProbability,
-                languageWeight, // float languageWeight,
-                false, // boolean dumpGStates,
-                false, // boolean showCompilationProgress,
-                false, // boolean spreadWordProbabilitiesAcrossPronunciations,
-                false, // boolean addOutOfGrammarBranch,
-                1.0, // double outOfGrammarBranchProbability,
-                1.0, // double phoneInsertionProbability,
-                null // AcousticModel phoneLoopAcousticModel
-        );
-    }
+	protected void initLinguist() throws MalformedURLException, ClassNotFoundException {
+
+		this.grammar = new JSGFGrammar(
+				// URL baseURL,
+				"file:" + ZeroFrame.Config.grammarFolder,
+				logMath, // LogMath logMath,
+				"zfgrammar", // String grammarName,
+				false, // boolean showGrammar,
+				false, // boolean optimizeGrammar,
+				false, // boolean addSilenceWords,
+				false, // boolean addFillerWords,
+				dictionary // Dictionary dictionary
+		);
+
+		this.linguist = new FlatLinguist(
+				model, // AcousticModel acousticModel,
+				logMath, // LogMath logMath,
+				grammar, // Grammar grammar,
+				unitManager, // UnitManager unitManager,
+				wordInsertionProbability, // double wordInsertionProbability,
+				1.0, // double silenceInsertionProbability,
+				1.0, // double fillerInsertionProbability,
+				1.0, // double unitInsertionProbability,
+				languageWeight, // float languageWeight,
+				false, // boolean dumpGStates,
+				false, // boolean showCompilationProgress,
+				false, // boolean spreadWordProbabilitiesAcrossPronunciations,
+				false, // boolean addOutOfGrammarBranch,
+				1.0, // double outOfGrammarBranchProbability,
+				1.0, // double phoneInsertionProbability,
+				null // AcousticModel phoneLoopAcousticModel
+		);
+	}
 
 }

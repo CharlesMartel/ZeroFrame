@@ -8,22 +8,24 @@ import java.util.List;
  * Static class holding the event registrars for application startup events
  * 
  * @author Hammer
- *
+ * 
  */
 public final class Startup {
-	
+
 	public static List<Method> ExtensionsLoadedEventMethods = new ArrayList<Method>(0);
-	public static List<Object> ExtensionsLoadedEventObjects = new ArrayList<Object>(0);	
-	public static void registerExtensionsLoadedEvent(Object caller, Method invokable){
+	public static List<Object> ExtensionsLoadedEventObjects = new ArrayList<Object>(0);
+
+	public static void registerExtensionsLoadedEvent(Object caller, Method invokable) {
 		ExtensionsLoadedEventObjects.add(caller);
 		ExtensionsLoadedEventMethods.add(invokable);
 	}
-	
+
 	public static List<Method> ApplicationReadyEventMethods = new ArrayList<Method>(0);
-	public static List<Object> ApplicationReadyEventObjects = new ArrayList<Object>(0);	
-	public static void registerApplicationReadyEvent(Object caller, Method invokable){
+	public static List<Object> ApplicationReadyEventObjects = new ArrayList<Object>(0);
+
+	public static void registerApplicationReadyEvent(Object caller, Method invokable) {
 		ApplicationReadyEventObjects.add(caller);
 		ApplicationReadyEventMethods.add(invokable);
 	}
-	
+
 }

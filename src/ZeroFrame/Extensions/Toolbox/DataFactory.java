@@ -32,17 +32,22 @@ public class DataFactory {
 		INTEGER, LONG, FLOAT, DOUBLE, BOOLEAN, STRING, DATA_SET
 	}
 
+	public enum FilterOperation {
+		GREATER_THAN, LESS_THAN, EQUAL_TO, FIELDS_EQUAL
+	}
+
 	public abstract class DataType {
-		
+
 		public abstract DataFactory.DataTypes getType();
+
 		protected DataRecord parent;
 		protected boolean set = false;
-		
-		public boolean isset(){
+
+		public boolean isset() {
 			return set;
 		}
-		
-		protected void update(){
+
+		protected void update() {
 			parent.update();
 		}
 	}
@@ -66,99 +71,114 @@ public class DataFactory {
 		}
 
 		public void fieldAdd(String fieldName, DataTypes fieldType) throws DataSetLockedException {
-			if(initialized){throw new DataSetLockedException();}
+			if (initialized) {
+				throw new DataSetLockedException();
+			}
 			fieldName = cleanStringForDatabase(fieldName);
 			if (!fields.containsKey(fieldName)) {
 				fields.put(fieldName, fieldType);
 				switch (fieldType) {
-					case INTEGER:
-						emptySet.put(fieldName, new IntegerDataType(defaultRecord));
-						break;
-					case LONG:
-						emptySet.put(fieldName, new LongDataType(defaultRecord));
-						break;
-					case FLOAT:
-						emptySet.put(fieldName, new FloatDataType(defaultRecord));
-						break;
-					case DOUBLE:
-						emptySet.put(fieldName, new DoubleDataType(defaultRecord));
-						break;
-					case BOOLEAN:
-						emptySet.put(fieldName, new BooleanDataType(defaultRecord));
-						break;
-					case STRING:
-						emptySet.put(fieldName, new StringDataType(defaultRecord));
-						break;
-					case DATA_SET:
-						emptySet.put(fieldName, new DataSetDataType(defaultRecord));
-						break;
-					default:
-						break;
+				case INTEGER:
+					emptySet.put(fieldName, new IntegerDataType(defaultRecord));
+					break;
+				case LONG:
+					emptySet.put(fieldName, new LongDataType(defaultRecord));
+					break;
+				case FLOAT:
+					emptySet.put(fieldName, new FloatDataType(defaultRecord));
+					break;
+				case DOUBLE:
+					emptySet.put(fieldName, new DoubleDataType(defaultRecord));
+					break;
+				case BOOLEAN:
+					emptySet.put(fieldName, new BooleanDataType(defaultRecord));
+					break;
+				case STRING:
+					emptySet.put(fieldName, new StringDataType(defaultRecord));
+					break;
+				case DATA_SET:
+					emptySet.put(fieldName, new DataSetDataType(defaultRecord));
+					break;
+				default:
+					break;
 				}
 			}
 		}
 
 		public void fieldAlter(String fieldName, DataTypes fieldType) throws FieldNotFoundException, DataSetLockedException {
-			if(initialized){throw new DataSetLockedException();}
+			if (initialized) {
+				throw new DataSetLockedException();
+			}
 			fieldName = cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
 				fields.put(fieldName, fieldType);
 				switch (fieldType) {
-					case INTEGER:
-						emptySet.put(fieldName, new IntegerDataType(defaultRecord));
-						break;
-					case LONG:
-						emptySet.put(fieldName, new LongDataType(defaultRecord));
-						break;
-					case FLOAT:
-						emptySet.put(fieldName, new FloatDataType(defaultRecord));
-						break;
-					case DOUBLE:
-						emptySet.put(fieldName, new DoubleDataType(defaultRecord));
-						break;
-					case BOOLEAN:
-						emptySet.put(fieldName, new BooleanDataType(defaultRecord));
-						break;
-					case STRING:
-						emptySet.put(fieldName, new StringDataType(defaultRecord));
-						break;
-					case DATA_SET:
-						emptySet.put(fieldName, new DataSetDataType(defaultRecord));
-						break;
-					default:
-						break;
+				case INTEGER:
+					emptySet.put(fieldName, new IntegerDataType(defaultRecord));
+					break;
+				case LONG:
+					emptySet.put(fieldName, new LongDataType(defaultRecord));
+					break;
+				case FLOAT:
+					emptySet.put(fieldName, new FloatDataType(defaultRecord));
+					break;
+				case DOUBLE:
+					emptySet.put(fieldName, new DoubleDataType(defaultRecord));
+					break;
+				case BOOLEAN:
+					emptySet.put(fieldName, new BooleanDataType(defaultRecord));
+					break;
+				case STRING:
+					emptySet.put(fieldName, new StringDataType(defaultRecord));
+					break;
+				case DATA_SET:
+					emptySet.put(fieldName, new DataSetDataType(defaultRecord));
+					break;
+				default:
+					break;
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public DataRecord getRecordTemplate() throws DataSetNotInitializedException{
-			if(!initialized){throw new DataSetNotInitializedException();}
-			return new DataRecord(-1, emptySet, this);
+
+		public DataRecord getRecordTemplate() throws DataSetNotInitializedException {
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
+			HashMap<String, DataType> tempSet = getEmptySet();
+			return new DataRecord(-1, tempSet, this);
 		}
 
 		public void clearCached() throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			records.clear();
 			recordPointer = 0;
 		}
 
 		public void clearStored() throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			truncateDB();
 			recordPointer = 0;
 		}
 
 		public void clearAll() throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			records.clear();
 			truncateDB();
 			recordPointer = 0;
 		}
 
 		public void erase() throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			records.clear();
 			truncateDB();
 			eraseDB();
@@ -166,10 +186,12 @@ public class DataFactory {
 		}
 
 		public void loadAll() throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			String sql = "SELECT * FROM " + tableName;
 			try {
-				//this is a simple query that is sure to work.
+				// this is a simple query that is sure to work.
 				runSQLLoad(sql);
 			} catch (FieldNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -178,141 +200,150 @@ public class DataFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 
 		public void loadFiltered(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException, IncompatibleDataTypeException, FilterValueNotSetException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			fieldName = cleanStringForDatabase(fieldName);
-			//make sure field exists
-			if(!fields.containsKey(fieldName)){
+			// make sure field exists
+			if (!fields.containsKey(fieldName)) {
 				throw new FieldNotFoundException(fieldName);
 			}
-			//get field type of named field
+			// get field type of named field
 			DataTypes recordType = fields.get(fieldName);
-			//make sure types match
-			if(recordType != filterObject.getType()){
+			// make sure types match
+			if (recordType != filterObject.getType()) {
 				throw new CompatibleFieldNotFoundException(filterObject.getType(), fieldName);
 			}
-			//make sure the filter object has a value
-			if(!filterObject.set){
+			// make sure the filter object has a value
+			if (!filterObject.set) {
 				throw new FilterValueNotSetException();
 			}
 			String sql = "SELECT * FROM " + tableName + " WHERE " + fieldName + " = ";
 			switch (filterObject.getType()) {
-				case INTEGER:
-					IntegerDataType intfilter = (IntegerDataType) filterObject;
-					sql += Integer.toString(intfilter.getValue());
-					break;
-				case LONG:
-					LongDataType longfilter = (LongDataType) filterObject;
-					sql += Long.toString(longfilter.getValue());
-					break;
-				case FLOAT:
-					FloatDataType floatfilter = (FloatDataType) filterObject;
-					sql += Float.toString(floatfilter.getValue());
-					break;
-				case DOUBLE:
-					DoubleDataType doublefilter = (DoubleDataType) filterObject;
-					sql += Double.toString(doublefilter.getValue());
-					break;
-				case BOOLEAN:
-					BooleanDataType booleanfilter = (BooleanDataType) filterObject;
-					sql += Boolean.toString(booleanfilter.getValue());
-					break;
-				case STRING:
-					StringDataType stringfilter = (StringDataType) filterObject;
-					sql += "'" + stringfilter.getValue() + "'";
-					break;
-				case DATA_SET:
-					//The following wont work as a data set is a reference type, will need to update this
-					//TODO: filter by dataset
-					/*
-					DataSetDataType datasetfilter = (DataSetDataType) filterObject;
-					*/
-					break;
-				default:
-					break;
+			case INTEGER:
+				IntegerDataType intfilter = (IntegerDataType) filterObject;
+				sql += Integer.toString(intfilter.getValue());
+				break;
+			case LONG:
+				LongDataType longfilter = (LongDataType) filterObject;
+				sql += Long.toString(longfilter.getValue());
+				break;
+			case FLOAT:
+				FloatDataType floatfilter = (FloatDataType) filterObject;
+				sql += Float.toString(floatfilter.getValue());
+				break;
+			case DOUBLE:
+				DoubleDataType doublefilter = (DoubleDataType) filterObject;
+				sql += Double.toString(doublefilter.getValue());
+				break;
+			case BOOLEAN:
+				BooleanDataType booleanfilter = (BooleanDataType) filterObject;
+				sql += Boolean.toString(booleanfilter.getValue());
+				break;
+			case STRING:
+				StringDataType stringfilter = (StringDataType) filterObject;
+				sql += "'" + stringfilter.getValue() + "'";
+				break;
+			case DATA_SET:
+				// The following wont work as a data set is a reference type,
+				// will need to update this
+				// TODO: filter by dataset
+				/*
+				 * DataSetDataType datasetfilter = (DataSetDataType)
+				 * filterObject;
+				 */
+				break;
+			default:
+				break;
 			}
 			runSQLLoad(sql);
 		}
 
 		public void filter(String fieldName, DataType filterObject) throws FieldNotFoundException, CompatibleFieldNotFoundException, DataSetNotInitializedException, FilterValueNotSetException {
-			if(!initialized){throw new DataSetNotInitializedException();}
-			//make sure field exists
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
+			// make sure field exists
 			fieldName = cleanStringForDatabase(fieldName);
-			if(!fields.containsKey(fieldName)){
+			if (!fields.containsKey(fieldName)) {
 				throw new FieldNotFoundException(fieldName);
 			}
-			//get field type of named field
+			// get field type of named field
 			DataTypes recordType = fields.get(fieldName);
-			//make sure types match
-			if(recordType != filterObject.getType()){
+			// make sure types match
+			if (recordType != filterObject.getType()) {
 				throw new CompatibleFieldNotFoundException(filterObject.getType(), fieldName);
-			}			
-			//make sure the filter object has a value
-			if(!filterObject.set){
+			}
+			// make sure the filter object has a value
+			if (!filterObject.set) {
 				throw new FilterValueNotSetException();
 			}
-			//loop through records and remove any record that matches the filterObjects value for
+			// loop through records and remove any record that matches the
+			// filterObjects value for
 			// the specified field
-			for(DataRecord record: records){
-				//get the fields DataType object
-				DataType fieldValue = record.getFieldValue(fieldName);
-				//switch on the type of field and compare values, remove record if values match
+			for (DataRecord record : records) {
+				// get the fields DataType object
+				DataType fieldValue = record.getField(fieldName);
+				// switch on the type of field and compare values, remove record
+				// if values match
 				switch (fieldValue.getType()) {
 				case INTEGER:
 					IntegerDataType intfield = (IntegerDataType) fieldValue;
 					IntegerDataType intfilter = (IntegerDataType) filterObject;
-					if(intfield.getValue() != intfilter.getValue()){
+					if (intfield.getValue() != intfilter.getValue()) {
 						records.remove(record);
 					}
 					break;
 				case LONG:
 					LongDataType longfield = (LongDataType) fieldValue;
 					LongDataType longfilter = (LongDataType) filterObject;
-					if(longfield.getValue() != longfilter.getValue()){
+					if (longfield.getValue() != longfilter.getValue()) {
 						records.remove(record);
 					}
 					break;
 				case FLOAT:
 					FloatDataType floatfield = (FloatDataType) fieldValue;
 					FloatDataType floatfilter = (FloatDataType) filterObject;
-					if(floatfield.getValue() != floatfilter.getValue()){
+					if (floatfield.getValue() != floatfilter.getValue()) {
 						records.remove(record);
 					}
 					break;
 				case DOUBLE:
 					DoubleDataType doublefield = (DoubleDataType) fieldValue;
 					DoubleDataType doublefilter = (DoubleDataType) filterObject;
-					if(doublefield.getValue() != doublefilter.getValue()){
+					if (doublefield.getValue() != doublefilter.getValue()) {
 						records.remove(record);
 					}
 					break;
 				case BOOLEAN:
 					BooleanDataType booleanfield = (BooleanDataType) fieldValue;
 					BooleanDataType booleanfilter = (BooleanDataType) filterObject;
-					if(booleanfield.getValue() != booleanfilter.getValue()){
+					if (booleanfield.getValue() != booleanfilter.getValue()) {
 						records.remove(record);
 					}
 					break;
 				case STRING:
 					StringDataType stringfield = (StringDataType) fieldValue;
 					StringDataType stringfilter = (StringDataType) filterObject;
-					if(stringfield.getValue() != stringfilter.getValue()){
+					if (stringfield.getValue() != stringfilter.getValue()) {
 						records.remove(record);
 					}
 					break;
 				case DATA_SET:
-					//The following wont work as a data set is a reference type, will need to update this
-					//TODO: filter by dataset
+					// The following wont work as a data set is a reference
+					// type, will need to update this
+					// TODO: filter by dataset
 					/*
-					DataSetDataType datasetfield = (DataSetDataType) fieldValue;
-					DataSetDataType datasetfilter = (DataSetDataType) filterObject;
-					if(datasetfield.getValue() != datasetfilter.getValue()){
-						records.remove(record);
-					}
-					*/
+					 * DataSetDataType datasetfield = (DataSetDataType)
+					 * fieldValue; DataSetDataType datasetfilter =
+					 * (DataSetDataType) filterObject;
+					 * if(datasetfield.getValue() != datasetfilter.getValue()){
+					 * records.remove(record); }
+					 */
 					break;
 				default:
 					break;
@@ -322,12 +353,14 @@ public class DataFactory {
 		}
 
 		public void insertRecord(DataRecord record) throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
-			if(checkIfRecordExists(record)){
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
+			if (checkIfRecordExists(record)) {
 				updateRecord(record);
-			}else{
+			} else {
 				String sql = "INSERT INTO " + tableName + " (";
-				//Loop through the fileds and add to the sql string
+				// Loop through the fileds and add to the sql string
 				Iterator<Entry<String, DataTypes>> iterator = fields.entrySet().iterator();
 				while (iterator.hasNext()) {
 					Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
@@ -335,105 +368,114 @@ public class DataFactory {
 					sql += fieldName + ", ";
 				}
 				int lastIdx = sql.length() - 2;
-			    sql = sql.substring(0, lastIdx);
+				sql = sql.substring(0, lastIdx);
 				sql += ") VALUES (";
 				iterator = fields.entrySet().iterator();
 				while (iterator.hasNext()) {
 					Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
-					try{ //Got to put it in a try for the FieldNotFoundException
+					try { // Got to put it in a try for the
+							// FieldNotFoundException
 						switch (entry.getValue()) {
-							case INTEGER:
-								IntegerDataType tempint = ((IntegerDataType)record.getFieldValue(entry.getKey()));
-								if(tempint.set){
-									sql += tempint.getValue() + ", ";
-								}else{
-									sql += "NULL, ";
+						case INTEGER:
+							IntegerDataType tempint = ((IntegerDataType) record.getField(entry.getKey()));
+							if (tempint.set) {
+								sql += tempint.getValue() + ", ";
+							} else {
+								sql += "NULL, ";
+							}
+							break;
+						case LONG:
+							LongDataType templong = ((LongDataType) record.getField(entry.getKey()));
+							if (templong.set) {
+								sql += templong.getValue() + ", ";
+							} else {
+								sql += "NULL, ";
+							}
+							break;
+						case FLOAT:
+							FloatDataType tempfloat = ((FloatDataType) record.getField(entry.getKey()));
+							if (tempfloat.set) {
+								sql += tempfloat.getValue() + ", ";
+							} else {
+								sql += "NULL, ";
+							}
+							break;
+						case DOUBLE:
+							DoubleDataType tempdouble = ((DoubleDataType) record.getField(entry.getKey()));
+							if (tempdouble.set) {
+								sql += tempdouble.getValue() + ", ";
+							} else {
+								sql += "NULL, ";
+							}
+							break;
+						case BOOLEAN:
+							String textRepresentation = null;
+							BooleanDataType tempboolean = ((BooleanDataType) record.getField(entry.getKey()));
+							if (tempboolean.set) {
+								if (((BooleanDataType) record.getField(entry.getKey())).getValue()) {
+									textRepresentation = "true";
+								} else {
+									textRepresentation = "false";
 								}
-								break;
-							case LONG:
-								LongDataType templong = ((LongDataType)record.getFieldValue(entry.getKey()));
-								if(templong.set){
-									sql += templong.getValue() + ", ";
-								}else{
-									sql += "NULL, ";
-								}
-								break;
-							case FLOAT:
-								FloatDataType tempfloat = ((FloatDataType)record.getFieldValue(entry.getKey()));
-								if(tempfloat.set){
-									sql += tempfloat.getValue() + ", ";
-								}else{
-									sql += "NULL, ";
-								}
-								break;
-							case DOUBLE:
-								DoubleDataType tempdouble = ((DoubleDataType)record.getFieldValue(entry.getKey()));
-								if(tempdouble.set){
-									sql += tempdouble.getValue() + ", ";
-								}else{
-									sql += "NULL, ";
-								}
-								break;
-							case BOOLEAN:
-								String textRepresentation = null;
-								BooleanDataType tempboolean = ((BooleanDataType)record.getFieldValue(entry.getKey()));
-								if(tempboolean.set){
-									if(((BooleanDataType)record.getFieldValue(entry.getKey())).getValue()){
-										textRepresentation = "true";
-									}else{
-										textRepresentation = "false";
-									}
-									sql += "'" + textRepresentation + "', ";
-								}else{
-									sql += "NULL, ";
-								}								
-								break;
-							case STRING:
-								StringDataType tempstring = ((StringDataType)record.getFieldValue(entry.getKey()));
-								if(tempstring.set){
-									sql += "'" + tempstring.getValue() + "', ";
-								}else{
-									sql += "NULL, ";
-								}
-								break;
-							case DATA_SET:
-								//TODO: Add functionality for datasets existing as fields in records							
-								break;
-							default:
-								break;
+								sql += "'" + textRepresentation + "', ";
+							} else {
+								sql += "NULL, ";
+							}
+							break;
+						case STRING:
+							StringDataType tempstring = ((StringDataType) record.getField(entry.getKey()));
+							if (tempstring.set) {
+								sql += "'" + tempstring.getValue() + "', ";
+							} else {
+								sql += "NULL, ";
+							}
+							break;
+						case DATA_SET:
+							// TODO: Add functionality for datasets existing as
+							// fields in records
+							break;
+						default:
+							break;
 						}
-					}catch(FieldNotFoundException exception){
-						//would never actually happen
+					} catch (FieldNotFoundException exception) {
+						// would never actually happen
 					}
 				}
 				lastIdx = sql.length() - 2;
-			    sql = sql.substring(0, lastIdx);
-				sql += ")";				
+				sql = sql.substring(0, lastIdx);
+				sql += ")";
 				int newId = ZeroFrame.Data.DatabaseController.executeInsert(sql);
 				record.recordid = newId;
+				records.add(record);
 			}
 		}
-		
-		public void updateRecord(DataRecord record) throws DataSetNotInitializedException{
-			if(!initialized){throw new DataSetNotInitializedException();}
+
+		public void updateRecord(DataRecord record) throws DataSetNotInitializedException {
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			runSQLUpdate(record);
 		}
 
 		public void deleteRecord(DataRecord record) throws DataSetNotInitializedException {
-			if(!initialized){throw new DataSetNotInitializedException();}
+			if (!initialized) {
+				throw new DataSetNotInitializedException();
+			}
 			deleteRecordFromDataBase((record.getRecordID()));
 			records.remove(record);
 		}
-		
-		private boolean checkIfRecordExists(DataRecord record){
-			//TODO: Not entirely sure... but if someone was to delete a record but still have the record
-			//object, but then went to update that record... I think it would break everything... I will 
-			//need to look into this when I have more time.
-			if(record.getRecordID() != -1){
+
+		private boolean checkIfRecordExists(DataRecord record) {
+			// TODO: Not entirely sure... but if someone was to delete a record
+			// but still have the record
+			// object, but then went to update that record... I think it would
+			// break everything... I will
+			// need to look into this when I have more time.
+			if (record.getRecordID() != -1) {
 				return true;
 			}
-			for(DataRecord loopRecord: records){
-				if(loopRecord.getRecordID() == record.getRecordID()){
+			for (DataRecord loopRecord : records) {
+				if (loopRecord.getRecordID() == record.getRecordID()) {
 					return true;
 				}
 			}
@@ -445,11 +487,11 @@ public class DataFactory {
 		}
 
 		public DataRecord next() {
-			if(records.size() > recordPointer){
+			if (records.size() > recordPointer) {
 				DataRecord returnable = records.get(recordPointer);
 				recordPointer++;
 				return returnable;
-			}else{
+			} else {
 				recordPointer = 0;
 				return null;
 			}
@@ -457,7 +499,7 @@ public class DataFactory {
 
 		private boolean checkTableExists() {
 			DatabaseMetaData mData = ZeroFrame.Data.DatabaseController.getMetaData();
-			String[] tableTypes = {"TABLE"};
+			String[] tableTypes = { "TABLE" };
 			ResultSet result = null;
 			try {
 				result = mData.getTables(null, null, null, tableTypes);
@@ -466,8 +508,8 @@ public class DataFactory {
 				e1.printStackTrace();
 			}
 			try {
-				while (result.next()){
-					if(result.getString("TABLE_NAME").equals(tableName)){
+				while (result.next()) {
+					if (result.getString("TABLE_NAME").equals(tableName)) {
 						return true;
 					}
 				}
@@ -484,8 +526,9 @@ public class DataFactory {
 		}
 
 		private void eraseDB() {
-			// TODO: if I am to implement the ability to have datasets within datasets, there will need
-			//to be more than a primitive drop on the main table
+			// TODO: if I am to implement the ability to have datasets within
+			// datasets, there will need
+			// to be more than a primitive drop on the main table
 			String sql = "DROP TABLE " + tableName;
 			runSQLCommand(sql);
 		}
@@ -500,8 +543,8 @@ public class DataFactory {
 		}
 
 		private void runSQLUpdate(DataRecord record) {
-			//TODO: update record
-			if(record.getRecordID() == -1){
+			// TODO: update record
+			if (record.getRecordID() == -1) {
 				try {
 					insertRecord(record);
 				} catch (DataSetNotInitializedException e) {
@@ -511,85 +554,87 @@ public class DataFactory {
 				return;
 			}
 			String sql = "UPDATE " + tableName + " SET ";
-			//Loop through the fileds and add to the sql string
+			// Loop through the fileds and add to the sql string
 			Iterator<Entry<String, DataTypes>> iterator = fields.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
-				try{ //Gotta put it in a try for the FieldNotFoundException
+				try { // Gotta put it in a try for the FieldNotFoundException
 					switch (entry.getValue()) {
-						case INTEGER:
-							sql += entry.getKey() + "=" + ((IntegerDataType)record.getFieldValue(entry.getKey())).getValue() + ", ";
-							break;
-						case LONG:
-							sql += entry.getKey() + "=" + ((LongDataType)record.getFieldValue(entry.getKey())).getValue() + ", ";
-							break;
-						case FLOAT:
-							sql += entry.getKey() + "=" + ((FloatDataType)record.getFieldValue(entry.getKey())).getValue() + ", ";
-							break;
-						case DOUBLE:
-							sql += entry.getKey() + "=" + ((DoubleDataType)record.getFieldValue(entry.getKey())).getValue() + ", ";
-							break;
-						case BOOLEAN:
-							String textRepresentation = null;
-							if(((BooleanDataType)record.getFieldValue(entry.getKey())).getValue()){
-								textRepresentation = "true";
-							}else{
-								textRepresentation = "false";
-							}
-							sql += entry.getKey() + "=" + "'" + textRepresentation + "', ";
-							break;
-						case STRING:
-							sql += entry.getKey() + "=" + "'" + ((StringDataType)record.getFieldValue(entry.getKey())).getValue() + "', ";
-							break;
-						case DATA_SET:
-							//TODO: Add functionality for datasets existing as fields in records							
-							break;
-						default:
-							break;
+					case INTEGER:
+						sql += entry.getKey() + "=" + ((IntegerDataType) record.getField(entry.getKey())).getValue() + ", ";
+						break;
+					case LONG:
+						sql += entry.getKey() + "=" + ((LongDataType) record.getField(entry.getKey())).getValue() + ", ";
+						break;
+					case FLOAT:
+						sql += entry.getKey() + "=" + ((FloatDataType) record.getField(entry.getKey())).getValue() + ", ";
+						break;
+					case DOUBLE:
+						sql += entry.getKey() + "=" + ((DoubleDataType) record.getField(entry.getKey())).getValue() + ", ";
+						break;
+					case BOOLEAN:
+						String textRepresentation = null;
+						if (((BooleanDataType) record.getField(entry.getKey())).getValue()) {
+							textRepresentation = "true";
+						} else {
+							textRepresentation = "false";
+						}
+						sql += entry.getKey() + "=" + "'" + textRepresentation + "', ";
+						break;
+					case STRING:
+						sql += entry.getKey() + "=" + "'" + ((StringDataType) record.getField(entry.getKey())).getValue() + "', ";
+						break;
+					case DATA_SET:
+						// TODO: Add functionality for datasets existing as
+						// fields in records
+						break;
+					default:
+						break;
 					}
-				}catch(FieldNotFoundException exception){
-					//would never actually happen
+				} catch (FieldNotFoundException exception) {
+					// would never actually happen
 				}
 			}
 			int lastIdx = sql.length() - 2;
-		    sql = sql.substring(0, lastIdx);
-			sql += " WHERE SYS_RECORD_ID=" + Integer.toString(record.getRecordID());				
+			sql = sql.substring(0, lastIdx);
+			sql += " WHERE SYS_RECORD_ID=" + Integer.toString(record.getRecordID());
 			runSQLCommand(sql);
 		}
 
-		private void runSQLLoad(String sqlStatement) throws  DataSetNotInitializedException, FieldNotFoundException, IncompatibleDataTypeException {
+		private void runSQLLoad(String sqlStatement) throws DataSetNotInitializedException, FieldNotFoundException, IncompatibleDataTypeException {
 			ResultSet result = ZeroFrame.Data.DatabaseController.executeQuery(sqlStatement);
-			records.clear();			
+			records.clear();
 			try {
 				while (result.next()) {
-					DataRecord record = new DataRecord(Integer.parseInt(result.getString("SYS_RECORD_ID")), emptySet, this);
+					DataRecord record = new DataRecord(Integer.parseInt(result.getString("SYS_RECORD_ID")), getEmptySet(), this);
 					Iterator<Entry<String, DataTypes>> iterator = fields.entrySet().iterator();
 					while (iterator.hasNext()) {
 						Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
 						switch (entry.getValue()) {
-							case INTEGER:
-								record.fields.put(entry.getKey(), new IntegerDataType(Integer.parseInt(result.getString(entry.getKey())), record));
-								break;
-							case LONG:
-								record.fields.put(entry.getKey(), new LongDataType(Long.parseLong(result.getString(entry.getKey())), record));
-								break;
-							case FLOAT:
-								record.fields.put(entry.getKey(), new FloatDataType(Float.parseFloat(result.getString(entry.getKey())), record));
-								break;
-							case DOUBLE:
-								record.fields.put(entry.getKey(), new DoubleDataType(Double.parseDouble(result.getString(entry.getKey())), record));
-								break;
-							case BOOLEAN:
-								record.fields.put(entry.getKey(), new BooleanDataType(Boolean.parseBoolean(result.getString(entry.getKey())), record));
-								break;
-							case STRING:
-								record.fields.put(entry.getKey(), new StringDataType(result.getString(entry.getKey()), record));
-								break;
-							case DATA_SET:
-								//TODO: Add functionality for datasets existing as fields in records							
-								break;
-							default:
-								break;
+						case INTEGER:
+							record.fields.put(entry.getKey(), new IntegerDataType(Integer.parseInt(result.getString(entry.getKey())), record));
+							break;
+						case LONG:
+							record.fields.put(entry.getKey(), new LongDataType(Long.parseLong(result.getString(entry.getKey())), record));
+							break;
+						case FLOAT:
+							record.fields.put(entry.getKey(), new FloatDataType(Float.parseFloat(result.getString(entry.getKey())), record));
+							break;
+						case DOUBLE:
+							record.fields.put(entry.getKey(), new DoubleDataType(Double.parseDouble(result.getString(entry.getKey())), record));
+							break;
+						case BOOLEAN:
+							record.fields.put(entry.getKey(), new BooleanDataType(Boolean.parseBoolean(result.getString(entry.getKey())), record));
+							break;
+						case STRING:
+							record.fields.put(entry.getKey(), new StringDataType(result.getString(entry.getKey()), record));
+							break;
+						case DATA_SET:
+							// TODO: Add functionality for datasets existing as
+							// fields in records
+							break;
+						default:
+							break;
 						}
 					}
 					records.add(record);
@@ -600,8 +645,8 @@ public class DataFactory {
 			}
 			recordPointer = 0;
 		}
-		
-		protected String cleanStringForDatabase(String toBeCleaned){
+
+		protected String cleanStringForDatabase(String toBeCleaned) {
 			return toBeCleaned.replaceAll("[^a-zA-Z0-9]", "");
 		}
 
@@ -610,45 +655,84 @@ public class DataFactory {
 		 * stored previously.
 		 */
 		public void initialize() {
-			if(checkTableExists()){
-			 	//table exists so do... nothing
-			}else{
-				//table has not yet been created... so create it
+			if (checkTableExists()) {
+				// table exists so do... nothing
+			} else {
+				// table has not yet been created... so create it
 				String sql = "CREATE TABLE " + tableName + " (SYS_RECORD_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)";
-				//Loop through the fileds and add to the sql string
+				// Loop through the fileds and add to the sql string
 				Iterator<Entry<String, DataTypes>> iterator = fields.entrySet().iterator();
 				while (iterator.hasNext()) {
 					Map.Entry<String, DataTypes> entry = (Map.Entry<String, DataTypes>) iterator.next();
 					switch (entry.getValue()) {
-						case INTEGER:
-							sql += ", " + entry.getKey() + " INTEGER";
-							break;
-						case LONG:
-							sql += ", " + entry.getKey() + " BIGINT";
-							break;
-						case FLOAT:
-							sql += ", " + entry.getKey() + " FLOAT";
-							break;
-						case DOUBLE:
-							sql += ", " + entry.getKey() + " DOUBLE";
-							break;
-						case BOOLEAN:
-							sql += ", " + entry.getKey() + " VARCHAR(5)";
-							break;
-						case STRING:
-							sql += ", " + entry.getKey() + " LONG VARCHAR";
-							break;
-						case DATA_SET:
-							//TODO: Add functionality for datasets existing as fields in records							
-							break;
-						default:
-							break;
+					case INTEGER:
+						sql += ", " + entry.getKey() + " INTEGER";
+						break;
+					case LONG:
+						sql += ", " + entry.getKey() + " BIGINT";
+						break;
+					case FLOAT:
+						sql += ", " + entry.getKey() + " FLOAT";
+						break;
+					case DOUBLE:
+						sql += ", " + entry.getKey() + " DOUBLE";
+						break;
+					case BOOLEAN:
+						sql += ", " + entry.getKey() + " VARCHAR(5)";
+						break;
+					case STRING:
+						sql += ", " + entry.getKey() + " LONG VARCHAR";
+						break;
+					case DATA_SET:
+						// TODO: Add functionality for datasets existing as
+						// fields in records
+						break;
+					default:
+						break;
 					}
 				}
-			sql += ")";
-			runSQLCommand(sql);
+				sql += ")";
+				runSQLCommand(sql);
 			}
 			initialized = true;
+		}
+
+		private String buildSQLFromFilter(Filter filter) {
+			return "";
+		}
+
+		private HashMap<String, DataType> getEmptySet() {
+			HashMap<String, DataType> tempSet = new HashMap<String, DataType>();
+			Iterator<Entry<String, DataType>> iterator = emptySet.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, DataType> entry = (Map.Entry<String, DataType>) iterator.next();
+				switch (fields.get(entry.getKey())) {
+				case INTEGER:
+					tempSet.put(entry.getKey(), new IntegerDataType(defaultRecord));
+					break;
+				case LONG:
+					tempSet.put(entry.getKey(), new LongDataType(defaultRecord));
+					break;
+				case FLOAT:
+					tempSet.put(entry.getKey(), new FloatDataType(defaultRecord));
+					break;
+				case DOUBLE:
+					tempSet.put(entry.getKey(), new DoubleDataType(defaultRecord));
+					break;
+				case BOOLEAN:
+					tempSet.put(entry.getKey(), new BooleanDataType(defaultRecord));
+					break;
+				case STRING:
+					tempSet.put(entry.getKey(), new StringDataType(defaultRecord));
+					break;
+				case DATA_SET:
+					tempSet.put(entry.getKey(), new DataSetDataType(defaultRecord));
+					break;
+				default:
+					break;
+				}
+			}
+			return tempSet;
 		}
 
 	}
@@ -663,28 +747,32 @@ public class DataFactory {
 			recordid = recordID;
 			fields = emptySet;
 			parent = parentDataSet;
-			//loop through fields and be sure that all types are associated with this record
+			// loop through fields and be sure that all types are associated
+			// with this record
 			Iterator<Entry<String, DataType>> iterator = fields.entrySet().iterator();
 			while (iterator.hasNext()) {
 				Map.Entry<String, DataType> entry = (Map.Entry<String, DataType>) iterator.next();
 				entry.getValue().parent = this;
 			}
-			
+
 		}
-		
-		protected void update(){
-			if(parent != null){
+
+		protected void update() {
+			if (parent != null) {
 				try {
 					parent.updateRecord(this);
 				} catch (DataSetNotInitializedException e) {
-					//Being that only a data set can create a data record and you cant get a data record
-					//from an uninitialized data set, this would never happen, but java freaks without it
-					//so yeah....
+					// Being that only a data set can create a data record and
+					// you cant get a data record
+					// from an uninitialized data set, this would never happen,
+					// but java freaks without it
+					// so yeah....
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
+
 		public int getRecordID() {
 			return recordid;
 		}
@@ -693,7 +781,7 @@ public class DataFactory {
 			return fields;
 		}
 
-		public DataType getFieldValue(String fieldName)	throws FieldNotFoundException {
+		public DataType getField(String fieldName) throws FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
 				return fields.get(fieldName);
@@ -701,99 +789,99 @@ public class DataFactory {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public IntegerDataType getIntegerFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		public IntegerDataType getIntegerField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.INTEGER){
+				if (fields.get(fieldName).getType() != DataTypes.INTEGER) {
 					throw new IncompatibleDataTypeException(DataTypes.INTEGER, fields.get(fieldName).getType());
-				}else{
-					return (IntegerDataType)fields.get(fieldName);
+				} else {
+					return (IntegerDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public LongDataType getLongFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		public LongDataType getLongField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.LONG){
+				if (fields.get(fieldName).getType() != DataTypes.LONG) {
 					throw new IncompatibleDataTypeException(DataTypes.LONG, fields.get(fieldName).getType());
-				}else{
-					return (LongDataType)fields.get(fieldName);
+				} else {
+					return (LongDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public FloatDataType getFloatFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		public FloatDataType getFloatField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.FLOAT){
+				if (fields.get(fieldName).getType() != DataTypes.FLOAT) {
 					throw new IncompatibleDataTypeException(DataTypes.FLOAT, fields.get(fieldName).getType());
-				}else{
-					return (FloatDataType)fields.get(fieldName);
+				} else {
+					return (FloatDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public DoubleDataType getDoubleFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		public DoubleDataType getDoubleField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.DOUBLE){
+				if (fields.get(fieldName).getType() != DataTypes.DOUBLE) {
 					throw new IncompatibleDataTypeException(DataTypes.DOUBLE, fields.get(fieldName).getType());
-				}else{
-					return (DoubleDataType)fields.get(fieldName);
+				} else {
+					return (DoubleDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public BooleanDataType getBooleanFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		public BooleanDataType getBooleanField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.BOOLEAN){
+				if (fields.get(fieldName).getType() != DataTypes.BOOLEAN) {
 					throw new IncompatibleDataTypeException(DataTypes.BOOLEAN, fields.get(fieldName).getType());
-				}else{
-					return (BooleanDataType)fields.get(fieldName);
+				} else {
+					return (BooleanDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public StringDataType getStringFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		public StringDataType getStringField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.STRING){
+				if (fields.get(fieldName).getType() != DataTypes.STRING) {
 					throw new IncompatibleDataTypeException(DataTypes.STRING, fields.get(fieldName).getType());
-				}else{
-					return (StringDataType)fields.get(fieldName);
+				} else {
+					return (StringDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public DataSetDataType getDataSetFieldValue(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException{
+
+		private DataSetDataType getDataSetField(String fieldName) throws IncompatibleDataTypeException, FieldNotFoundException {
 			fieldName = parent.cleanStringForDatabase(fieldName);
 			if (fields.containsKey(fieldName)) {
-				if(fields.get(fieldName).getType() != DataTypes.DATA_SET){
+				if (fields.get(fieldName).getType() != DataTypes.DATA_SET) {
 					throw new IncompatibleDataTypeException(DataTypes.DATA_SET, fields.get(fieldName).getType());
-				}else{
-					return (DataSetDataType)fields.get(fieldName);
+				} else {
+					return (DataSetDataType) fields.get(fieldName);
 				}
 			} else {
 				throw new FieldNotFoundException(fieldName);
 			}
 		}
-		
-		public DataTypes getFieldType(String fieldName)throws FieldNotFoundException {
+
+		public DataTypes getFieldType(String fieldName) throws FieldNotFoundException {
 			if (fields.containsKey(fieldName)) {
 				return fields.get(fieldName).getType();
 			} else {
@@ -801,274 +889,331 @@ public class DataFactory {
 			}
 		}
 	}
-	
-	//To be used later for more advanced filtering, not usable yet, so it stays private
-	private class Filter{
-		
+
+	// To be used later for more advanced filtering, not usable yet, so it stays
+	// private
+	// TODO: Finish Filter Class
+	private class Filter {
+
 		protected ArrayList<String> fields = new ArrayList<String>();
-		
-		private Filter(){
-			
+		protected ArrayList<Object> values = new ArrayList<Object>();
+		protected ArrayList<FilterOperation> operations = new ArrayList<FilterOperation>();
+
+		private Filter() {
 		}
+
+		public void addRule(String fieldName, FilterOperation operation, int value) {
+			internalAddRule(fieldName, operation, value);
+		}
+
+		public void addRule(String fieldName, FilterOperation operation, float value) {
+			internalAddRule(fieldName, operation, value);
+		}
+
+		public void addRule(String fieldName, FilterOperation operation, long value) {
+			internalAddRule(fieldName, operation, value);
+		}
+
+		public void addRule(String fieldName, FilterOperation operation, double value) {
+			internalAddRule(fieldName, operation, value);
+		}
+
+		public void addRule(String fieldName, FilterOperation operation, boolean value) {
+			internalAddRule(fieldName, operation, value);
+		}
+
+		public void addRule(String fieldName, FilterOperation operation, String value) {
+			internalAddRule(fieldName, operation, value);
+		}
+
+		public void addEqualFieldRule(String firstFieldName, String secondFieldName) {
+			internalAddRule(firstFieldName, FilterOperation.FIELDS_EQUAL, secondFieldName);
+		}
+
+		private void internalAddRule(String fieldName, FilterOperation operation, Object value) {
+			fields.add(fieldName);
+			values.add(value);
+			operations.add(operation);
+		}
+
 	}
-	
+
 	// ********************************************************************************************
-	//Data Types
-	
-	public class IntegerDataType extends DataType{
-		
+	// Data Types
+
+	public class IntegerDataType extends DataType {
+
 		private int value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.INTEGER;
 		}
-		
-		public IntegerDataType(){}
-		
-		public IntegerDataType(DataRecord parentRecord){
+
+		public IntegerDataType() {
+		}
+
+		public IntegerDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public IntegerDataType(int intValue, DataRecord parentRecord){
+
+		public IntegerDataType(int intValue, DataRecord parentRecord) {
 			value = intValue;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public void setValue(int intValue){
+
+		public void setValue(int intValue) {
 			value = intValue;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-		
-		public int getValue(){
+
+		public int getValue() {
 			return value;
 		}
-		
+
 	}
-	
-	public class LongDataType extends DataType{
-		
+
+	public class LongDataType extends DataType {
+
 		private Long value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.LONG;
-		}		
-		
-		public LongDataType(){}
-		
-		public LongDataType(DataRecord parentRecord){
+		}
+
+		public LongDataType() {
+		}
+
+		public LongDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public LongDataType(Long longValue, DataRecord parentRecord){
+
+		public LongDataType(Long longValue, DataRecord parentRecord) {
 			value = longValue;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public Long getValue(){
+
+		public Long getValue() {
 			return value;
 		}
-		
-		public void setValue(Long longValue){
+
+		public void setValue(Long longValue) {
 			value = longValue;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-	
+
 	}
-	
-	public class FloatDataType extends DataType{
-		
+
+	public class FloatDataType extends DataType {
+
 		private float value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.FLOAT;
 		}
-		
-		public FloatDataType(){}
-		
-		public FloatDataType(DataRecord parentRecord){
+
+		public FloatDataType() {
+		}
+
+		public FloatDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public FloatDataType(Float floatValue, DataRecord parentRecord){
+
+		public FloatDataType(Float floatValue, DataRecord parentRecord) {
 			value = floatValue;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public void setValue(Float floatValue){
+
+		public void setValue(Float floatValue) {
 			value = floatValue;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-		
-		public float getValue(){
+
+		public float getValue() {
 			return value;
 		}
-		
+
 	}
-	
-	public class DoubleDataType extends DataType{
-		
+
+	public class DoubleDataType extends DataType {
+
 		private double value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.DOUBLE;
 		}
-		
-		public DoubleDataType(){}
-		
-		public DoubleDataType(DataRecord parentRecord){
+
+		public DoubleDataType() {
+		}
+
+		public DoubleDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public DoubleDataType(double doubleValue, DataRecord parentRecord){
+
+		public DoubleDataType(double doubleValue, DataRecord parentRecord) {
 			value = doubleValue;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public void setValue(double doubleValue){
+
+		public void setValue(double doubleValue) {
 			value = doubleValue;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-		
-		public double getValue(){
+
+		public double getValue() {
 			return value;
 		}
-		
+
 	}
-	
-	public class BooleanDataType extends DataType{
-		
+
+	public class BooleanDataType extends DataType {
+
 		private boolean value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.BOOLEAN;
-		}		
-		
-		public BooleanDataType(){}
-		
-		public BooleanDataType(DataRecord parentRecord){
+		}
+
+		public BooleanDataType() {
+		}
+
+		public BooleanDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public BooleanDataType(boolean boolValue, DataRecord parentRecord){
+
+		public BooleanDataType(boolean boolValue, DataRecord parentRecord) {
 			value = boolValue;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public void setValue(boolean boolValue){
+
+		public void setValue(boolean boolValue) {
 			value = boolValue;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-		
-		public boolean getValue(){
+
+		public boolean getValue() {
 			return value;
 		}
-		
+
 	}
-	
-	public class StringDataType extends DataType{
-		
+
+	public class StringDataType extends DataType {
+
 		private String value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.STRING;
-		}		
-		
-		public StringDataType(){}
-		
-		public StringDataType(DataRecord parentRecord){
+		}
+
+		public StringDataType() {
+		}
+
+		public StringDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public StringDataType(String stringValue, DataRecord parentRecord){
+
+		public StringDataType(String stringValue, DataRecord parentRecord) {
 			value = stringValue;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public void setValue(String stringValue){
+
+		public void setValue(String stringValue) {
 			value = stringValue;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-		
-		public String getValue(){
+
+		public String getValue() {
 			return value;
 		}
-		
+
 	}
-	
-	public class DataSetDataType extends DataType{
-		
+
+	public class DataSetDataType extends DataType {
+
 		private DataSet value;
-		
+
 		@Override
 		public DataTypes getType() {
 			return DataTypes.DATA_SET;
 		}
-		
-		public DataSetDataType(){}
-		
-		public DataSetDataType(DataRecord parentRecord){
+
+		public DataSetDataType() {
+		}
+
+		public DataSetDataType(DataRecord parentRecord) {
 			parent = parentRecord;
 		}
-		
-		public DataSetDataType(DataSet dataSet, DataRecord parentRecord){
+
+		public DataSetDataType(DataSet dataSet, DataRecord parentRecord) {
 			value = dataSet;
 			set = true;
 			parent = parentRecord;
 		}
-		
-		public void setDataSet(DataSet dataSet){
+
+		public void setDataSet(DataSet dataSet) {
 			value = dataSet;
 			set = true;
-			if(parent != null){
+			if (parent != null) {
 				update();
 			}
 		}
-		
-		public DataSet getDataSet(){
+
+		public DataSet getDataSet() {
 			return value;
 		}
-		
-	}	
+
+	}
 
 	// ********************************************************************************************
 	// Exceptions
 
-	public class IncompatibleDataTypeException extends Exception {
+	public class ZeroFrameDataException extends ZeroFrame.ZeroFrameException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = -6823199613256536914L;
+
+		public ZeroFrameDataException(String arg0) {
+			super(arg0);
+		}
+	}
+
+	public class IncompatibleDataTypeException extends ZeroFrameDataException {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3117905644841216837L;
 
 		public IncompatibleDataTypeException(DataTypes expected,
 				DataTypes recieved) {
@@ -1078,12 +1223,12 @@ public class DataFactory {
 		}
 	}
 
-	public class CompatibleFieldNotFoundException extends Exception {
+	public class CompatibleFieldNotFoundException extends ZeroFrameDataException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 2L;
+		private static final long serialVersionUID = -1230652968643921297L;
 
 		public CompatibleFieldNotFoundException(DataTypes expected,
 				String fieldName) {
@@ -1092,64 +1237,64 @@ public class DataFactory {
 		}
 	}
 
-	public class FieldNotFoundException extends Exception {
+	public class FieldNotFoundException extends ZeroFrameDataException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 3L;
+		private static final long serialVersionUID = -7719370833684956067L;
 
 		public FieldNotFoundException(String fieldName) {
 			super("No field of name: " + fieldName + " was found!");
 		}
 	}
-	
-	public class DataTypeValueNotSetException extends Exception{
+
+	public class DataTypeValueNotSetException extends ZeroFrameDataException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 4L;
-		
-		public DataTypeValueNotSetException(){
+		private static final long serialVersionUID = 1594113729421490159L;
+
+		public DataTypeValueNotSetException() {
 			super("No value was set for this Data Type Object before attempting storage!");
 		}
 	}
-	
-	public class DataSetLockedException extends Exception {
+
+	public class DataSetLockedException extends ZeroFrameDataException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 5L;
-		
-		public DataSetLockedException(){
+		private static final long serialVersionUID = -1343887475028659124L;
+
+		public DataSetLockedException() {
 			super("An attempt was made to alter the data set after the set was initialized!");
 		}
 	}
-	
-	public class DataSetNotInitializedException extends Exception {
+
+	public class DataSetNotInitializedException extends ZeroFrameDataException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 6L;
-		
-		public DataSetNotInitializedException(){
+		private static final long serialVersionUID = -5382134066501823840L;
+
+		public DataSetNotInitializedException() {
 			super("An attempt to alter the data set was performed without the data set being initialized!");
 		}
 	}
-	
-	public class FilterValueNotSetException extends Exception{
+
+	public class FilterValueNotSetException extends ZeroFrameDataException {
 
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 7L;
-		
-		public FilterValueNotSetException(){
+		private static final long serialVersionUID = -7360899815947176118L;
+
+		public FilterValueNotSetException() {
 			super("The passed in filter DataType object value is not set!");
 		}
-		
+
 	}
 }

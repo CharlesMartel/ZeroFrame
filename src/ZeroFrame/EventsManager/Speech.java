@@ -53,7 +53,7 @@ public final class Speech {
 				}
 			}
 		}
-		
+
 		// Grammared Event
 		count = ZeroFrame.Events.Speech.SpeechReceivedGrammaredEventObjects.size();
 		for (int index = 0; index < count; index++) {

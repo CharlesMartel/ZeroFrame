@@ -16,92 +16,92 @@ import ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray;
 
 /**
  * @author Hammer
- *
+ * 
  */
 public final class Grammar {
-	
+
 	private static ArrayList<ZeroFrame.Extensions.Toolbox.GrammarMatrix> matrices = new ArrayList<ZeroFrame.Extensions.Toolbox.GrammarMatrix>(0);
-	
+
 	private static int ruleCount = 0;
-	
-	public static void addGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
+
+	public static void addGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix) {
 		matrices.add(grammarMatrix);
 	}
-	
-	public static void initializeGrammar(){
-		
-		if(matrices.size() < 1){
+
+	public static void initializeGrammar() {
+
+		if (matrices.size() < 1) {
 			return;
 		}
 		GrammarWriter.initialize();
-		for(int index = 0; index < matrices.size(); index++){
+		for (int index = 0; index < matrices.size(); index++) {
 			GrammarWriter.writeGrammarMatrix(matrices.get(index));
 		}
 		GrammarWriter.commit();
-		
+
 	}
-	
-	private static class GrammarWriter{
-		
+
+	private static class GrammarWriter {
+
 		private static String newLine = System.getProperty("line.separator");
 		private static String fileHeader = "#JSGF V1.0;" + newLine + "grammar zfgrammar;" + newLine;
-		
+
 		private static String fileString = "";
-		
-		public static void initialize(){
+
+		public static void initialize() {
 			fileString += fileHeader;
 		}
-		
-		public static int writeGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix){
+
+		public static int writeGrammarMatrix(ZeroFrame.Extensions.Toolbox.GrammarMatrix grammarMatrix) {
 			ArrayList matrixSequence = grammarMatrix.getPhraseSequence();
 			String topDef = "public <rule" + Integer.toString(ruleCount) + "> = ";
 			int topDefRuleID = ruleCount;
 			ruleCount++;
-			for(int i = 0; i < matrixSequence.size(); i++){
-				if(matrixSequence.get(i) instanceof ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray){
+			for (int i = 0; i < matrixSequence.size(); i++) {
+				if (matrixSequence.get(i) instanceof ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray) {
 					ZeroFrame.Extensions.Toolbox.GrammarMatrix.PhraseArray phraseArray = (PhraseArray) matrixSequence.get(i);
 					String ruledef = "public <rule" + Integer.toString(ruleCount) + "> = ";
 					topDef += " <rule" + Integer.toString(ruleCount) + ">";
-					ruleCount++;					
+					ruleCount++;
 					String[] rules = phraseArray.getPhraseArray();
-					for(int j = 0; j < rules.length; j++){
-						if((j+1) < rules.length){
+					for (int j = 0; j < rules.length; j++) {
+						if ((j + 1) < rules.length) {
 							ruledef += rules[j].toLowerCase() + " | ";
-						}else{
+						} else {
 							ruledef += rules[j].toLowerCase();
 						}
 					}
 					ruledef += ";";
 					fileString += ruledef + newLine;
-				}else{
-					//its a grammar matrix, loop unto thyself... recursion 
+				} else {
+					// its a grammar matrix, loop unto thyself... recursion
 					int matrixRuleID = writeGrammarMatrix((GrammarMatrix) matrixSequence.get(i));
 					topDef += " <rule" + Integer.toString(matrixRuleID) + ">";
 				}
 			}
-			
+
 			topDef += ";";
-			fileString += topDef + newLine;	
+			fileString += topDef + newLine;
 			return topDefRuleID;
 		}
-		
-		public static void commit(){
+
+		public static void commit() {
 			File gramFile = new File(ZeroFrame.Config.grammarFolder + "\\zfgrammar.gram");
-			if(gramFile.exists()){
+			if (gramFile.exists()) {
 				gramFile.delete();
 			}
 			try {
 				FileWriter fstream = new FileWriter("zfgrammar.gram");
 				BufferedWriter out = new BufferedWriter(fstream);
 				out.write(fileString);
-				//Close the output stream
+				// Close the output stream
 				out.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}			
-			//System.out.println(fileString);
+			}
+			// System.out.println(fileString);
 		}
 	}
-	
+
 }

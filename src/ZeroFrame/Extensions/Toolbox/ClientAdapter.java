@@ -15,8 +15,8 @@ public class ClientAdapter {
 	}
 
 	// Property methods
-	
-	public String getClientName(){
+
+	public String getClientName() {
 		return myClient.getClientName();
 	}
 
@@ -25,12 +25,12 @@ public class ClientAdapter {
 	public void speak(String toSpeak) {
 		myClient.speak(toSpeak);
 	}
-	
-	public void sendMessage(String message){
+
+	public void sendMessage(String message) {
 		myClient.sendMessage(message);
 	}
-	
-	public void sendPluginNotification(String pluginId, String payload){
+
+	public void sendPluginNotification(String pluginId, String payload) {
 		myClient.sendMessage(ZeroFrame.Constants.MessageCodes.NOTIFY_PLUGIN, pluginId + "::" + payload);
 	}
 

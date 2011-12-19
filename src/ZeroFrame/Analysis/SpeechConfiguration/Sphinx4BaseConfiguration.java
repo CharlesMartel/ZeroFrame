@@ -47,187 +47,183 @@ import java.util.logging.Logger;
 
 abstract public class Sphinx4BaseConfiguration {
 
-    protected int absoluteBeamWidth;
-    protected double relativeBeamWidth;
-    protected double wordInsertionProbability;
-    protected int absoluteWordBeamWidth;
-    protected double relativeWordBeamWidth;
-    protected double silenceInsertionProbability;
-    protected float languageWeight;
+	protected int absoluteBeamWidth;
+	protected double relativeBeamWidth;
+	protected double wordInsertionProbability;
+	protected int absoluteWordBeamWidth;
+	protected double relativeWordBeamWidth;
+	protected double silenceInsertionProbability;
+	protected float languageWeight;
 
-    protected DataProcessor audioDataSource;
-    protected DataProcessor speechMarker;
-    protected DataProcessor dataBlocker;
-    protected DataProcessor speechClassifier;
-    protected DataProcessor nonSpeechDataFilter;
-    protected DataProcessor premphasizer;
-    protected DataProcessor windower;
-    protected DataProcessor fft;
-    protected DataProcessor melFilterBank;
-    protected DataProcessor dct;
-    protected DataProcessor dither;
-    protected DataProcessor cmn;
-    protected DataProcessor featureExtraction;
-    protected FrontEnd frontend;
+	protected DataProcessor audioDataSource;
+	protected DataProcessor speechMarker;
+	protected DataProcessor dataBlocker;
+	protected DataProcessor speechClassifier;
+	protected DataProcessor nonSpeechDataFilter;
+	protected DataProcessor premphasizer;
+	protected DataProcessor windower;
+	protected DataProcessor fft;
+	protected DataProcessor melFilterBank;
+	protected DataProcessor dct;
+	protected DataProcessor dither;
+	protected DataProcessor cmn;
+	protected DataProcessor featureExtraction;
+	protected FrontEnd frontend;
 
-    protected String dictURL;
-    protected String fillerDictURL;
-    protected String modelLocation;
+	protected String dictURL;
+	protected String fillerDictURL;
+	protected String modelLocation;
 
-    protected UnitManager unitManager;
-    protected Loader modelLoader;
-    protected AcousticModel model;
+	protected UnitManager unitManager;
+	protected Loader modelLoader;
+	protected AcousticModel model;
 
-    protected Dictionary dictionary;
-    protected Grammar grammar;
-    protected LanguageModel languageModel;
-    protected Linguist linguist;
+	protected Dictionary dictionary;
+	protected Grammar grammar;
+	protected LanguageModel languageModel;
+	protected Linguist linguist;
 
-    protected ActiveListFactory activeList;
-    protected AcousticScorer scorer;
-    protected Pruner pruner;
-    protected ActiveListFactory activeListFactory;
-    protected ActiveListFactory wordActiveListFactory;
-    protected SearchManager searchManager;
-    protected List<Monitor> monitors;
-    protected Decoder decoder;
-    protected Recognizer recognizer;
+	protected ActiveListFactory activeList;
+	protected AcousticScorer scorer;
+	protected Pruner pruner;
+	protected ActiveListFactory activeListFactory;
+	protected ActiveListFactory wordActiveListFactory;
+	protected SearchManager searchManager;
+	protected List<Monitor> monitors;
+	protected Decoder decoder;
+	protected Recognizer recognizer;
 
-    protected LogMath logMath;
+	protected LogMath logMath;
 
-    protected void initCommon() {
-        Logger.getLogger("").setLevel(Level.WARNING);
-        this.logMath = new LogMath(1.0001f, true);
-    }
+	protected void initCommon() {
+		Logger.getLogger("").setLevel(Level.WARNING);
+		this.logMath = new LogMath(1.0001f, true);
+	}
 
-    protected void initAudioDataSource() {
-        this.audioDataSource = new StreamDataSource(16000, 320, 16, false, true);
-    }
+	protected void initAudioDataSource() {
+		this.audioDataSource = new StreamDataSource(16000, 320, 16, false, true);
+	}
 
-    public StreamDataSource getAudioStreamDataSource() {
-        return (StreamDataSource) audioDataSource;
-    }
+	public StreamDataSource getAudioStreamDataSource() {
+		return (StreamDataSource) audioDataSource;
+	}
 
-    abstract protected void initModels() throws MalformedURLException, URISyntaxException, ClassNotFoundException;
+	abstract protected void initModels() throws MalformedURLException, URISyntaxException, ClassNotFoundException;
 
-    abstract protected void initLinguist() throws MalformedURLException, ClassNotFoundException;
+	abstract protected void initLinguist() throws MalformedURLException, ClassNotFoundException;
 
+	protected void initFrontEnd() {
 
-    protected void initFrontEnd() {
+		this.dataBlocker = new DataBlocker(
+				10 // blockSizeMs
+		);
+		this.speechClassifier = new SpeechClassifier(
+				10, // frameLengthMs,
+				0.003, // adjustment,
+				10, // threshold,
+				0 // minSignal
+		);
 
-        this.dataBlocker = new DataBlocker(
-                10 // blockSizeMs
-        );
-        this.speechClassifier = new SpeechClassifier(
-                10,     // frameLengthMs,
-                0.003, // adjustment,
-                10,     // threshold,
-                0       // minSignal
-        );
-        
-        this.speechMarker = new SpeechMarker(
-                200, // startSpeechTime,
-                500, // endSilenceTime,
-                100, // speechLeader,
-                50,  // speechLeaderFrames
-                100, // speechTrailer
-                15.0 // endSilenceDecay
-        );
+		this.speechMarker = new SpeechMarker(
+				200, // startSpeechTime,
+				500, // endSilenceTime,
+				100, // speechLeader,
+				50, // speechLeaderFrames
+				100, // speechTrailer
+				15.0 // endSilenceDecay
+		);
 
-        this.nonSpeechDataFilter = new NonSpeechDataFilter();
+		this.nonSpeechDataFilter = new NonSpeechDataFilter();
 
-        this.premphasizer = new Preemphasizer(
-                0.97 // preemphasisFactor
-        );
-        this.windower = new RaisedCosineWindower(
-                0.46, // double alpha
-                25.625f, // windowSizeInMs
-                10.0f // windowShiftInMs
-        );
-        this.fft = new DiscreteFourierTransform(
-                -1, // numberFftPoints
-                false // invert
-        );
-        this.melFilterBank = new MelFrequencyFilterBank(
-                130.0, // minFreq,
-                6800.0, // maxFreq,
-                40 // numberFilters
-        );
-        this.dct = new DiscreteCosineTransform(
-                40, // numberMelFilters,
-                13  // cepstrumSize
-        );
-        this.cmn = new LiveCMN(
-                12.0, // initialMean,
-                100,  // cmnWindow,
-                160   // cmnShiftWindow
-        );
-        this.featureExtraction = new DeltasFeatureExtractor(
-                3 // window
-        );
+		this.premphasizer = new Preemphasizer(
+				0.97 // preemphasisFactor
+		);
+		this.windower = new RaisedCosineWindower(
+				0.46, // double alpha
+				25.625f, // windowSizeInMs
+				10.0f // windowShiftInMs
+		);
+		this.fft = new DiscreteFourierTransform(
+				-1, // numberFftPoints
+				false // invert
+		);
+		this.melFilterBank = new MelFrequencyFilterBank(
+				130.0, // minFreq,
+				6800.0, // maxFreq,
+				40 // numberFilters
+		);
+		this.dct = new DiscreteCosineTransform(
+				40, // numberMelFilters,
+				13 // cepstrumSize
+		);
+		this.cmn = new LiveCMN(
+				12.0, // initialMean,
+				100, // cmnWindow,
+				160 // cmnShiftWindow
+		);
+		this.featureExtraction = new DeltasFeatureExtractor(
+				3 // window
+		);
 
-        ArrayList<DataProcessor> pipeline = new ArrayList<DataProcessor>();
-        pipeline.add(audioDataSource);
-        pipeline.add(dataBlocker);
-        pipeline.add(speechClassifier);
-        pipeline.add(speechMarker);
-        pipeline.add(nonSpeechDataFilter);
-        pipeline.add(premphasizer);
-        pipeline.add(windower);
-        pipeline.add(fft);
-        pipeline.add(melFilterBank);
-        pipeline.add(dct);
-        pipeline.add(cmn);
-        pipeline.add(featureExtraction);
+		ArrayList<DataProcessor> pipeline = new ArrayList<DataProcessor>();
+		pipeline.add(audioDataSource);
+		pipeline.add(dataBlocker);
+		pipeline.add(speechClassifier);
+		pipeline.add(speechMarker);
+		pipeline.add(nonSpeechDataFilter);
+		pipeline.add(premphasizer);
+		pipeline.add(windower);
+		pipeline.add(fft);
+		pipeline.add(melFilterBank);
+		pipeline.add(dct);
+		pipeline.add(cmn);
+		pipeline.add(featureExtraction);
 
-        this.frontend = new FrontEnd(pipeline);
+		this.frontend = new FrontEnd(pipeline);
 
-    }
+	}
 
-    protected void initRecognizer() {
+	protected void initRecognizer() {
 
-        this.scorer = new ThreadedAcousticScorer(frontend, null, 10, true, 0, Thread.NORM_PRIORITY);
+		this.scorer = new ThreadedAcousticScorer(frontend, null, 10, true, 0, Thread.NORM_PRIORITY);
 
-        this.pruner = new SimplePruner();
+		this.pruner = new SimplePruner();
 
-        this.activeListFactory = new PartitionActiveListFactory(absoluteBeamWidth, relativeBeamWidth, logMath);
+		this.activeListFactory = new PartitionActiveListFactory(absoluteBeamWidth, relativeBeamWidth, logMath);
 
-        this.searchManager = new SimpleBreadthFirstSearchManager(
-                logMath, linguist, pruner,
-                scorer, activeListFactory,
-                false, 0.0, 0, false);
+		this.searchManager = new SimpleBreadthFirstSearchManager(
+				logMath, linguist, pruner,
+				scorer, activeListFactory,
+				false, 0.0, 0, false);
 
-        this.decoder = new Decoder(searchManager,
-                false, false,
-                new ArrayList<ResultListener>(),
-                100000);
+		this.decoder = new Decoder(searchManager,
+				false, false,
+				new ArrayList<ResultListener>(),
+				100000);
 
-        this.recognizer = new Recognizer(decoder, monitors);
+		this.recognizer = new Recognizer(decoder, monitors);
 
-        this.monitors = new ArrayList<Monitor>();
-        this.monitors.add(new BestPathAccuracyTracker(recognizer, false, false, false, false, false, false));
-        this.monitors.add(new MemoryTracker(recognizer, false, false));
-        this.monitors.add(new SpeedTracker(recognizer, frontend, true, false, false, false));
-    }
+		this.monitors = new ArrayList<Monitor>();
+		this.monitors.add(new BestPathAccuracyTracker(recognizer, false, false, false, false, false, false));
+		this.monitors.add(new MemoryTracker(recognizer, false, false));
+		this.monitors.add(new SpeedTracker(recognizer, frontend, true, false, false, false));
+	}
 
+	protected void init() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
+		initCommon();
+		initAudioDataSource();
+		initFrontEnd();
+		initModels();
+		initLinguist();
+		initRecognizer();
+	}
 
-    protected void init() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
-        initCommon();
-        initAudioDataSource();
-        initFrontEnd();
-        initModels();
-        initLinguist();
-        initRecognizer();
-    }
+	public Recognizer getRecognizer() {
+		return recognizer;
+	}
 
-    public Recognizer getRecognizer() {
-        return recognizer;
-    }
-
-    public Sphinx4BaseConfiguration() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
-        init();
-    }
-
+	public Sphinx4BaseConfiguration() throws MalformedURLException, URISyntaxException, ClassNotFoundException {
+		init();
+	}
 
 }
- 

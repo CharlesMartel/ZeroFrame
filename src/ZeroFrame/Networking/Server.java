@@ -7,41 +7,41 @@ import java.net.Socket;
 
 public class Server extends Thread {
 
-	//The server socket
+	// The server socket
 	private ServerSocket serverSocket;
-	//The client socket
+	// The client socket
 	private Socket clientSocket;
-	
+
 	InetAddress ServerIP = null;
-	
+
 	@Override
-	public void run(){
+	public void run() {
 		serverSocket = null;
 		clientSocket = null;
-		
-		while(true){
-	        
-			try {
-	            serverSocket = new ServerSocket(ZeroFrame.Config.serverPort);
-	        } catch (IOException e) {
-	        	
-	        }
-	        
-	        try {
-	            clientSocket = serverSocket.accept();
-	        } catch (IOException e) {
 
-	        }
-	        
-	        Client newClient = new Client();
-	        newClient.setClientHost(clientSocket.getInetAddress());
-	        MessageClient tempclient = new MessageClient(clientSocket);
-	        tempclient.setClient(newClient);
-	        tempclient.start();
-	        newClient.setMessageClient(tempclient);
-	        ClientManager.registerClient(newClient);
-	        
+		while (true) {
+
+			try {
+				serverSocket = new ServerSocket(ZeroFrame.Config.serverPort);
+			} catch (IOException e) {
+
+			}
+
+			try {
+				clientSocket = serverSocket.accept();
+			} catch (IOException e) {
+
+			}
+
+			Client newClient = new Client();
+			newClient.setClientHost(clientSocket.getInetAddress());
+			MessageClient tempclient = new MessageClient(clientSocket);
+			tempclient.setClient(newClient);
+			tempclient.start();
+			newClient.setMessageClient(tempclient);
+			ClientManager.registerClient(newClient);
+
 		}
-		
+
 	}
 }
